@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - AI Clinic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style-login.css">
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900">Đăng Nhập AI Clinic</h2>
+            <p class="text-xs text-slate-500 mt-1">Chọn vai trò truy cập hệ thống của bạn</p>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Vai trò truy cập</label>
+                <select id="user-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm font-medium">
+                    <option value="patient">Bệnh nhân / Khách hàng</option>
+                    <option value="doctor">Bác sĩ / Chuyên gia y tế</option>
+                    <option value="admin">Quản trị viên (Admin)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email hoặc tên đăng nhập</label>
+                <input type="text" id="user-email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm" placeholder="Nhập email...">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mật khẩu</label>
+                <input type="password" id="user-pass" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm" placeholder="••••••••">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 transition text-sm">
+                Đăng Nhập Hệ Thống
+            </button>
+        </form>
+
+        <div class="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
+            <p class="mb-2 font-semibold">Tài khoản mẫu dùng thử:</p>
+            <div class="bg-slate-50 p-3 rounded-xl text-left space-y-1 text-slate-600 font-mono">
+                <p>👨‍⚕️ <b>Bác sĩ:</b> bacsi1@gmail.com / 123456</p>
+                <p>🛠️ <b>Admin:</b> admin@gmail.com / 123456</p>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-500 mt-4">Chưa có tài khoản? <a href="register.html" class="text-blue-600 font-semibold hover:underline">Đăng ký ngay</a></p>
+    </div>
+
+    <!-- JavaScript phân quyền chuyển hướng khi đăng nhập -->
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const role = document.getElementById('user-role').value;
+
+            // Chuyển hướng đến giao diện tương ứng theo vai trò
+            if (role === 'doctor') {
+                window.location.href = 'doctor-dashboard.html';
+            } else if (role === 'admin') {
+                window.location.href = 'admin-clinic.html';
+            } else {
+                window.location.href = 'patient.html';
+            }
+        });
+    </script>
+</body>
+</html>

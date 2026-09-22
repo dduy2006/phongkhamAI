@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Bác Sĩ & Điều Hành - AI Clinic</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome cho Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Thanh điều hướng (Navbar) -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </a>
+                <div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
+                    <p class="text-xs text-slate-500">Phân hệ Quản trị & Bác sĩ</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 bg-slate-100 px-4 py-2 rounded-xl">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">BS</div>
+                    <span class="text-sm font-semibold text-slate-700">BS. Chuyên Khoa</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="max-w-7xl w-full mx-auto px-4 py-10 flex-1">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900">Danh Sách Bệnh Nhân Chờ Khám</h1>
+                <p class="text-slate-600 mt-1">Quản lý lịch hẹn, xem triệu chứng phân tích bởi AI và cập nhật kết quả điều trị.</p>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="refreshData()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl font-medium transition flex items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Làm mới dữ liệu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Thống kê nhanh phòng khám -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Lịch hẹn hôm nay</p>
+                <h3 id="stat-total" class="text-3xl font-extrabold text-slate-900">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Đang chờ khám</p>
+                <h3 id="stat-waiting" class="text-3xl font-extrabold text-blue-600">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Đã hoàn thành</p>
+                <h3 id="stat-done" class="text-3xl font-extrabold text-emerald-600">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Hệ thống AI Core</p>
+                <h3 class="text-lg font-bold text-teal-600 mt-1 flex items-center space-x-1.5">
+                    <span class="w-2.5 h-2.5 bg-teal-500 rounded-full animate-pulse"></span>
+                    <span>Hoạt động tốt</span>
+                </h3>
+            </div>
+        </div>
+
+        <!-- Bảng danh sách bệnh nhân -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-900">Hàng Đợi Khám Bệnh Trực Tuyến</h3>
+                <span class="text-xs text-slate-400">Đồng bộ tự động từ cổng bệnh nhân</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <th class="p-4 sm:px-6">Bệnh nhân</th>
+                            <th class="p-4 sm:px-6">Khoa đăng ký</th>
+                            <th class="p-4 sm:px-6">Bác sĩ phụ trách</th>
+                            <th class="p-4 sm:px-6">Thời gian khám</th>
+                            <th class="p-4 sm:px-6">Triệu chứng (AI gợi ý)</th>
+                            <th class="p-4 sm:px-6 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctor-table-body" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dữ liệu load tự động -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript quản lý bảng điều khiển bác sĩ -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            loadDoctorAppointments();
+        });
+
+        function loadDoctorAppointments() {
+            const tbody = document.getElementById('doctor-table-body');
+            const statTotal = document.getElementById('stat-total');
+            const statWaiting = document.getElementById('stat-waiting');
+            const statDone = document.getElementById('stat-done');
+
+            let appointments = JSON.parse(localStorage.getItem('ai_clinic_appointments')) || [];
+
+            statTotal.textContent = appointments.length;
+            statWaiting.textContent = appointments.length; // Giả lập tất cả đang chờ khám
+            statDone.textContent = "0";
+
+            if (appointments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-12 text-slate-400">
+                            <i class="fa-solid fa-user-clock text-4xl mb-3 block"></i>
+                            Hiện chưa có bệnh nhân nào đặt lịch khám.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            appointments.forEach((item, index) => {
+                const row = `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="p-4 sm:px-6 font-semibold text-slate-900">
+                            ${item.name}
+                            <div class="text-xs font-normal text-slate-500"><i class="fa-solid fa-phone mr-1"></i>${item.phone}</div>
+                        </td>
+                        <td class="p-4 sm:px-6 text-slate-700 font-medium">${item.department}</td>
+                        <td class="p-4 sm:px-6 text-slate-700">${item.doctor}</td>
+                        <td class="p-4 sm:px-6 text-slate-700">
+                            <div class="font-medium">${item.date}</div>
+                            <div class="text-xs text-slate-500">${item.time}</div>
+                        </td>
+                        <td class="p-4 sm:px-6 text-slate-600 max-w-xs truncate" title="${item.symptoms}">
+                            <span class="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-lg border border-blue-200 inline-block font-medium">
+                                <i class="fa-solid fa-brain mr-1 text-blue-500"></i>${item.symptoms || 'Chưa mô tả'}
+                            </span>
+                        </td>
+                        <td class="p-4 sm:px-6 text-center">
+                            <button onclick="finishConsultation(${index})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-xl font-semibold shadow-sm transition inline-flex items-center space-x-1.5">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Hoàn tất khám</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function finishConsultation(index) {
+            if(confirm("Xác nhận hoàn tất ca khám cho bệnh nhân này và lưu vào lưu trữ bệnh án?")) {
+                let appointments = JSON.parse(localStorage.getItem('ai_clinic_appointments')) || [];
+                // Xóa khỏi danh sách chờ khám
+                appointments.splice(index, 1);
+                localStorage.setItem('ai_clinic_appointments', JSON.stringify(appointments));
+                loadDoctorAppointments();
+            }
+        }
+
+        function refreshData() {
+            loadDoctorAppointments();
+        }
+    </script>
+</body>
+</html>

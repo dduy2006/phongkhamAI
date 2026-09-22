@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê Doanh Thu & Bệnh Nhân - AI Clinic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="admin-clinic.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition"><i class="fa-solid fa-arrow-left text-sm"></i></a>
+                <div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
+                    <p class="text-xs text-slate-500">Báo cáo phân tích số liệu</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl w-full mx-auto px-4 py-10 flex-1">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Thống Kê Hoạt Động Phòng Khám</h1>
+        <p class="text-slate-600 mb-8">Tổng hợp số lượng bệnh nhân, lượt tư vấn AI và doanh thu dịch vụ y tế.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-semibold">Doanh thu tháng này</p>
+                <h3 class="text-3xl font-extrabold text-blue-600 mt-2">148.500.000 đ</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-semibold">Tổng bệnh nhân khám</p>
+                <h3 class="text-3xl font-extrabold text-teal-600 mt-2">1,420 Lượt</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-semibold">Tỷ lệ hài lòng</p>
+                <h3 class="text-3xl font-extrabold text-indigo-600 mt-2">98.4%</h3>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

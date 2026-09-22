@@ -1,0 +1,259 @@
+/* --- 1. Reset & Định dạng cơ bản --- */
+:root {
+    --primary-color: #0284c7; /* Xanh dương hiện đại chuẩn y tế */
+    --primary-hover: #0369a1;
+    --secondary-color: #10b981; /* Xanh lá sang trọng cho nút */
+    --secondary-hover: #059669;
+    --text-color: #1e293b;
+    --bg-color: #f8fafc; /* Màu nền sáng, sạch sẽ */
+    --border-color: #cbd5e1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--text-color);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Hiệu ứng nền trang trí mờ ảo */
+body::before {
+    content: '';
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    background: rgba(2, 132, 199, 0.12);
+    border-radius: 50%;
+    top: -100px;
+    left: -100px;
+    z-index: 0;
+    filter: blur(70px);
+}
+
+/* --- 2. Bố cục Container chính (Căn giữa) --- */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- 3. Thẻ Đăng nhập (The Box) --- */
+.login-box {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 440px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* --- 4. Header Đăng nhập (Tiêu đề & Icon) --- */
+.login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.icon-circle {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 16px auto;
+    border: 2px solid #0284c7;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+
+.icon-circle i {
+    font-size: 30px;
+    color: var(--primary-color);
+}
+
+.login-header h2 {
+    font-size: 22px;
+    color: #0f172a;
+    margin-bottom: 6px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.login-header p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* --- 5. Định dạng các Ô nhập liệu (Input Group) --- */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 6px;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 13px 13px 13px 44px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fff;
+    color: #1e293b;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi chọn vào ô nhập liệu */
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+}
+
+.input-group input:focus ~ .input-icon,
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-color);
+}
+
+/* --- 6. Tùy chọn Ghi nhớ & Quên mật khẩu --- */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 13px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    color: #475569;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.remember-me input {
+    margin-right: 8px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* --- 7. Nút Đăng nhập (Button) --- */
+.btn-login {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.btn-login i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Hiệu ứng khi rê chuột vào nút */
+.btn-login:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* --- 8. Footer Đăng ký --- */
+.login-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #64748b;
+    border-top: 1px solid var(--border-color);
+    padding-top: 18px;
+}
+
+.login-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- 9. Tương thích Điện thoại (Responsive) --- */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 25px;
+    }
+    
+    .login-header h2 {
+        font-size: 20px;
+    }
+}

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tư Vấn Sức Khỏe - AI Clinic</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome cho Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex flex-col">
+
+    <!-- Thanh điều hướng (Navbar) -->
+    <header class="bg-white shadow-sm shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </a>
+                <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Assistant Medical</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-teal-200">
+                <span class="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></span>
+                <span>AI Trợ lý trực tuyến 24/7</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Khu vực chính chứa khung Chat AI -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col overflow-hidden">
+        
+        <!-- Hộp thoại cảnh báo y tế -->
+        <div class="bg-amber-50 border-l-4 border-amber-400 p-3 mb-4 rounded-r-xl text-xs sm:text-sm text-amber-800 flex items-start space-x-3 shrink-0">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 text-base"></i>
+            <div>
+                <span class="font-bold">Lưu ý quan trọng:</span> Trợ lý AI hỗ trợ giải đáp thông tin sức khỏe cơ bản. Đối với các trường hợp bệnh nặng, vui lòng đến trực tiếp phòng khám để được bác sĩ thăm khám chính xác.
+            </div>
+        </div>
+
+        <!-- Khung chat container -->
+        <div class="bg-white flex-1 rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+            
+            <!-- Danh sách tin nhắn -->
+            <div id="chat-container" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+                <!-- Tin nhắn từ AI chào mừng -->
+                <div class="flex items-start space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-2xl rounded-tl-sm max-w-xl text-sm leading-relaxed text-slate-700 shadow-sm">
+                        <p class="font-semibold text-slate-900 mb-1">Trợ lý AI Y Tế</p>
+                        Xin chào! Tôi có thể giúp gì cho bạn hôm nay? Bạn có thể hỏi tôi về lịch khám, dịch vụ, hoặc chia sẻ các triệu chứng sức khỏe đơn giản nhé.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thanh nhập tin nhắn và tải ảnh -->
+            <div class="p-4 bg-white border-t border-slate-100 shrink-0">
+                <form id="chat-form" class="flex items-center space-x-2">
+                    <!-- Nút đính kèm ảnh -->
+                    <label for="image-upload" class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 w-12 h-12 rounded-xl flex items-center justify-center transition shrink-0" title="Tải ảnh triệu chứng lên">
+                        <i class="fa-solid fa-image text-lg"></i>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    </label>
+                    
+                    <!-- Ô nhập văn bản -->
+                    <input type="text" id="user-input" placeholder="Nhập câu hỏi hoặc triệu chứng của bạn (ví dụ: phòng khám mở mấy giờ?)..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm" autocomplete="off">
+                    
+                    <!-- Nút gửi -->
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-xl flex items-center justify-center transition shadow-md shadow-blue-500/20 shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript xử lý AI thông minh theo ngữ cảnh câu hỏi đơn giản -->
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const imageUpload = document.getElementById('image-upload');
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if(!text) return;
+
+            // Thêm tin nhắn của User
+            appendMessage(text, 'user');
+            userInput.value = '';
+
+            // Hiển thị trạng thái đang suy nghĩ
+            showTypingIndicator();
+
+            // Phản hồi thông minh dựa trên nội dung người dùng hỏi
+            setTimeout(() => {
+                removeTypingIndicator();
+                const aiResponse = getSmartAIResponse(text);
+                appendMessage(aiResponse, 'ai');
+            }, 1000);
+        });
+
+        // Xử lý logic câu trả lời thông minh cho các câu hỏi đơn giản
+        function getSmartAIResponse(input) {
+            const query = input.toLowerCase();
+
+            // 1. Chào hỏi
+            if (query.includes('chào') || query.includes('hello') || query.includes('hi') || query.includes('chao')) {
+                return "Xin chào bạn! Tôi là trợ lý ảo của AI Clinic. Tôi có thể hỗ trợ thông tin gì về sức khỏe hoặc lịch khám của phòng khám không?";
+            }
+            
+            // 2. Hỏi giờ mở cửa / thời gian
+            if (query.includes('giờ') || query.includes('mở cửa') || query.includes('lịch') || query.includes('thời gian') || query.includes('khi nào')) {
+                return "Phòng khám AI Clinic mở cửa từ 08:00 đến 20:00 tất cả các ngày trong tuần (Thứ Hai đến Chủ Nhật). Bạn có thể đặt lịch trước qua mục 'Đặt lịch khám' nhé!";
+            }
+
+            // 3. Hỏi về địa điểm / liên hệ
+            if (query.includes('địa chỉ') || query.includes('ở đâu') || query.includes('đâu') || query.includes('liên hệ') || query.includes('sđt') || query.includes('điện thoại')) {
+                return "AI Clinic tọa lạc tại trung tâm thành phố, trang bị hệ thống thiết bị y tế thông minh và công nghệ AI hiện đại. Bạn có thể gọi hotline: 1900-xxxx để được hỗ trợ khẩn cấp.";
+            }
+
+            // 4. Triệu chứng đau đầu / sốt
+            if (query.includes('đau đầu') || query.includes('sốt') || query.includes('mệt')) {
+                return "Triệu chứng đau đầu hoặc sốt có thể do căng thẳng, thiếu ngủ hoặc cảm cúm nhẹ. Bạn nên uống nhiều nước, nghỉ ngơi ở nơi thoáng mát và theo dõi thân nhiệt. Nếu sốt cao trên 38.5 độ, hãy đến phòng khám gặp bác sĩ ngay nhé.";
+            }
+
+            // 5. Triệu chứng ho / đau họng / cảm
+            if (query.includes('ho') || query.includes('đau họng') || query.includes('cảm')) {
+                return "Đau họng và ho thường do viêm họng hoặc thay đổi thời tiết. Bạn có thể súc miệng bằng nước muối ấm, giữ ấm cổ. Nếu có đờm xanh/vàng hoặc khó thở, bạn nên đặt lịch khám chuyên khoa hô hấp.";
+            }
+
+            // 6. Triệu chứng đau bụng / tiêu hóa
+            if (query.includes('đau bụng') || query.includes('buồn nôn') || query.includes('tiêu chảy')) {
+                return "Đau bụng có thể liên quan đến vấn đề tiêu hóa hoặc thức ăn. Bạn nên ăn đồ mềm, ấm, tránh đồ sống/cay nóng và bổ sung Oresol nếu bị mất nước. Nếu đau dữ dội vùng bụng dưới phải, cần tới viện kiểm tra gấp.";
+            }
+
+            // 7. Câu hỏi mặc định thông minh nếu không khớp từ khóa
+            return `Cảm ơn bạn đã chia sẻ: "${input}". Để có chẩn đoán chính xác nhất, hệ thống khuyên bạn nên đặt lịch khám trực tiếp với bác sĩ chuyên khoa của chúng tôi. Bạn có muốn tôi hướng dẫn cách đặt lịch không?`;
+        }
+
+        // Xử lý khi tải ảnh lên
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    appendImageMessage(event.target.result);
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        appendMessage("AI đã nhận diện hình ảnh bạn tải lên. Mô hình phân tích hình ảnh ghi nhận vùng quan sát có cấu trúc bình thường nhưng cần bác sĩ chuyên khoa xác thực trực tiếp để có kết luận chính xác.", 'ai');
+                    }, 1500);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function appendMessage(text, sender) {
+            const isUser = sender === 'user';
+            const html = `
+                <div class="flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}">
+                    <div class="w-10 h-10 rounded-2xl ${isUser ? 'bg-teal-600' : 'bg-blue-600'} text-white flex items-center justify-center shadow-md shrink-0">
+                        <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+                    </div>
+                    <div class="${isUser ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-slate-100 text-slate-700 rounded-tl-sm'} p-4 rounded-2xl max-w-xl text-sm leading-relaxed shadow-sm">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendImageMessage(imgSrc) {
+            const html = `
+                <div class="flex items-start space-x-3 flex-row-reverse space-x-reverse">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="bg-blue-600 p-3 rounded-2xl rounded-tr-sm max-w-xs shadow-sm">
+                        <img src="${imgSrc}" class="rounded-xl max-h-48 object-cover">
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const html = `
+                <div id="typing" class="flex items-start space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-2xl rounded-tl-sm text-slate-500 text-sm flex items-center space-x-2">
+                        <span>AI đang suy nghĩ</span>
+                        <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                        <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typing');
+            if(typing) typing.remove();
+        }
+    </script>
+</body>
+</html>

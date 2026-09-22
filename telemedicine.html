@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Từ Xa (Telemedicine) - AI Clinic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-white font-sans h-screen flex flex-col overflow-hidden">
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <a href="index.html" class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700 transition"><i class="fa-solid fa-arrow-left text-sm"></i></a>
+            <div>
+                <h1 class="font-bold text-base">Phòng Tư Vấn Trực Tuyến AI Telehealth</h1>
+                <p class="text-xs text-teal-400"><i class="fa-solid fa-circle text-[8px] mr-1 animate-pulse"></i> Trợ lý AI ghi chép bệnh án đang hoạt động</p>
+            </div>
+        </div>
+        <div class="bg-red-500/20 border border-red-500/30 text-red-300 px-3 py-1 rounded-lg text-xs font-semibold">
+            Đang kết nối bảo mật mã hóa E2EE
+        </div>
+    </header>
+
+    <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
+        <div class="lg:col-span-2 flex flex-col space-y-4">
+            <div class="flex-1 bg-slate-800 rounded-3xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl">
+                <div class="w-28 h-28 bg-blue-600/30 rounded-full flex items-center justify-center border-4 border-blue-500/50 mb-4 animate-pulse">
+                    <i class="fa-solid fa-user-doctor text-5xl text-blue-400"></i>
+                </div>
+                <h3 class="text-xl font-bold">BS. CKII. Nguyễn Văn An</h3>
+                <p class="text-slate-400 text-sm mt-1">Đang chờ bệnh nhân tham gia phiên gọi video...</p>
+                <div class="absolute bottom-6 flex space-x-4 bg-slate-900/80 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-700">
+                    <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center transition"><i class="fa-solid fa-microphone"></i></button>
+                    <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center transition"><i class="fa-solid fa-video"></i></button>
+                    <a href="index.html" class="w-12 h-12 bg-red-600 hover:bg-red-700 rounded-xl flex items-center justify-center transition" title="Kết thúc cuộc gọi"><i class="fa-solid fa-phone-slash"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-3xl border border-slate-700 p-6 flex flex-col">
+            <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-robot text-teal-400 mr-2"></i>Trợ Lý AI Tóm Tắt Bệnh Án</h3>
+            <div class="flex-1 bg-slate-900/80 rounded-2xl p-4 border border-slate-700 text-xs text-slate-300 space-y-3 overflow-y-auto">
+                <p class="text-teal-300 font-semibold">> Hệ thống đang nghe cuộc gọi...</p>
+                <p>[08:00] Bệnh nhân báo cáo triệu chứng mệt mỏi, đau đầu nhẹ.</p>
+                <p>[08:02] AI đề xuất bác sĩ kiểm tra huyết áp và nhịp tim.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

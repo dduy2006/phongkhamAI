@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Kho Thuốc - AI Clinic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="admin-clinic.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition"><i class="fa-solid fa-arrow-left text-sm"></i></a>
+                <div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
+                    <p class="text-xs text-slate-500">Quản lý kho dược phẩm</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl w-full mx-auto px-4 py-10 flex-1">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900">Kho Thuốc & Vật Tư Y Tế</h1>
+                <p class="text-slate-600 mt-1">Theo dõi tồn kho, hạn sử dụng và tự động trừ số lượng khi bác sĩ kê đơn.</p>
+            </div>
+            <span class="bg-teal-50 text-teal-700 border border-teal-200 px-4 py-2 rounded-xl text-sm font-semibold">Cập nhật theo thời gian thực</span>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 font-bold text-lg text-slate-900">Danh Sách Dược Phẩm</div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                        <th class="p-4 sm:px-6">Tên thuốc / Vật tư</th>
+                        <th class="p-4 sm:px-6">Hoạt chất chính</th>
+                        <th class="p-4 sm:px-6">Số lượng tồn</th>
+                        <th class="p-4 sm:px-6">Đơn vị</th>
+                        <th class="p-4 sm:px-6">Trạng thái kho</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 sm:px-6 font-semibold text-slate-900">Paracetamol 500mg</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Paracetamol</td>
+                        <td class="p-4 sm:px-6 font-bold text-blue-600">1,250</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Viên</td>
+                        <td class="p-4 sm:px-6"><span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-semibold">Đủ hàng</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 sm:px-6 font-semibold text-slate-900">Amoxicillin 500mg</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Amoxicillin Trihydrate</td>
+                        <td class="p-4 sm:px-6 font-bold text-blue-600">420</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Viên</td>
+                        <td class="p-4 sm:px-6"><span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-semibold">Đủ hàng</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 sm:px-6 font-semibold text-slate-900">Oresol bù điện giải</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Sodium chloride, Glucose</td>
+                        <td class="p-4 sm:px-6 font-bold text-amber-600">85</td>
+                        <td class="p-4 sm:px-6 text-slate-600">Gói</td>
+                        <td class="p-4 sm:px-6"><span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full font-semibold">Sắp hết</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
