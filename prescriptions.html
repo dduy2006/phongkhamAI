@@ -1,0 +1,310 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý đơn thuốc | AI Clinic</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#1e293b}
+.sidebar{position:fixed;left:0;top:0;width:245px;height:100vh;background:#123b72;color:white;padding:25px 16px}
+.logo{font-size:23px;font-weight:bold;margin:0 10px 35px}
+.logo span{color:#60d5c2}
+.sidebar a{display:block;padding:14px 15px;margin:5px 0;color:#dbeafe;text-decoration:none;border-radius:9px;font-size:14px}
+.sidebar a:hover,.sidebar a.active{background:#2460a5;color:white}
+.main{margin-left:245px;padding:30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:15px}
+.topbar h1{font-size:27px}
+.topbar p{color:#64748b;margin-top:8px;font-size:14px}
+.user{background:white;padding:12px 18px;border-radius:12px;font-weight:bold}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:25px}
+.stat{background:white;padding:23px;border-radius:14px;box-shadow:0 3px 15px #0f172a08}
+.stat p{color:#64748b;font-size:14px}
+.stat h2{font-size:28px;margin-top:12px;color:#164e8a}
+.panel{background:white;padding:24px;border-radius:15px;box-shadow:0 3px 15px #0f172a08}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
+.panel-head h2{font-size:20px}
+button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold}
+.primary{background:#1676d2;color:white}
+.primary:hover{background:#105da9}
+.search{display:flex;gap:12px;margin-bottom:20px}
+.search input{flex:1;padding:12px;border:1px solid #dbe3ef;border-radius:8px;font-size:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:15px 12px;text-align:left;border-bottom:1px solid #edf1f7;font-size:14px}
+th{background:#f8fafc;color:#64748b;font-weight:600}
+.badge{padding:6px 10px;border-radius:20px;font-size:12px;background:#dcfce7;color:#166534}
+.actions{display:flex;gap:7px}
+.view{background:#e0f2fe;color:#075985}
+.delete{background:#fee2e2;color:#b91c1c}
+.empty{text-align:center;color:#64748b;padding:30px}
+.modal{display:none;position:fixed;inset:0;background:#0f172a88;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal-box{background:white;width:550px;max-width:100%;max-height:90vh;overflow:auto;padding:25px;border-radius:15px}
+.modal-box h2{margin-bottom:20px}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;margin-bottom:7px;font-size:14px;font-weight:bold}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:1px solid #dbe3ef;border-radius:8px;font-size:14px}
+.form-group textarea{min-height:90px;resize:vertical}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.cancel{background:#e2e8f0;color:#334155}
+.detail{line-height:1.9;color:#334155;white-space:pre-wrap}
+@media(max-width:900px){.sidebar{width:190px}.main{margin-left:190px;padding:20px}.stats{grid-template-columns:1fr}.panel{overflow-x:auto}}
+@media(max-width:600px){.sidebar{position:static;width:100%;height:auto}.sidebar a{display:inline-block}.main{margin:0;padding:15px}.topbar{align-items:flex-start;flex-direction:column}.search{flex-direction:column}.panel-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">AI <span>CLINIC</span></div>
+  <a href="index.html">🏠 Tổng quan</a>
+  <a href="patients.html">👥 Quản lý bệnh nhân</a>
+  <a href="doctors.html">👨‍⚕️ Quản lý bác sĩ</a>
+  <a href="doctor-schedule.html">📅 Lịch làm việc</a>
+  <a href="booking.html">📝 Đặt lịch khám</a>
+  <a href="medical-records.html">📋 Hồ sơ bệnh án</a>
+  <a href="prescriptions.html" class="active">💊 Quản lý đơn thuốc</a>
+  <a href="ai-consultation.html">🤖 Tư vấn AI</a>
+  <a href="admin.html">⚙️ Quản trị hệ thống</a>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div>
+      <h1>Quản lý đơn thuốc</h1>
+      <p>Quản lý và theo dõi đơn thuốc của bệnh nhân</p>
+    </div>
+    <div class="user">👤 Quản trị viên</div>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <p>Tổng số đơn thuốc</p>
+      <h2 id="totalCount">0</h2>
+    </div>
+    <div class="stat">
+      <p>Đơn thuốc hôm nay</p>
+      <h2 id="todayCount">0</h2>
+    </div>
+    <div class="stat">
+      <p>Số bệnh nhân được kê thuốc</p>
+      <h2 id="patientCount">0</h2>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Danh sách đơn thuốc</h2>
+      <button class="primary" onclick="openForm()">＋ Thêm đơn thuốc</button>
+    </div>
+
+    <div class="search">
+      <input id="searchInput" placeholder="Tìm theo mã đơn, tên bệnh nhân hoặc tên thuốc..." oninput="render()">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã đơn</th>
+          <th>Bệnh nhân</th>
+          <th>Ngày kê</th>
+          <th>Thuốc</th>
+          <th>Bác sĩ</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody id="prescriptionTable"></tbody>
+    </table>
+  </section>
+</main>
+
+<div class="modal" id="formModal">
+  <div class="modal-box">
+    <h2>Thêm đơn thuốc mới</h2>
+    <form id="prescriptionForm">
+      <div class="form-group">
+        <label>Tên bệnh nhân *</label>
+        <input id="patientName" required placeholder="Nhập tên bệnh nhân">
+      </div>
+      <div class="form-group">
+        <label>Tên bác sĩ *</label>
+        <input id="doctorName" required placeholder="Nhập tên bác sĩ">
+      </div>
+      <div class="form-group">
+        <label>Ngày kê đơn *</label>
+        <input id="prescriptionDate" type="date" required>
+      </div>
+      <div class="form-group">
+        <label>Tên thuốc *</label>
+        <input id="medicineName" required placeholder="Nhập tên thuốc">
+      </div>
+      <div class="form-group">
+        <label>Liều lượng và cách dùng *</label>
+        <textarea id="dosage" required placeholder="Nhập liều lượng, số lần dùng và thời gian sử dụng"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Ghi chú</label>
+        <textarea id="notes" placeholder="Ghi chú thêm nếu có"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="cancel" onclick="closeForm()">Hủy</button>
+        <button type="submit" class="primary">Lưu đơn thuốc</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-box">
+    <h2>Chi tiết đơn thuốc</h2>
+    <div id="detailContent" class="detail"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeDetail()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "clinicPrescriptions";
+
+function getData(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  }catch(e){
+    return [];
+  }
+}
+
+function saveData(data){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function makeId(){
+  return "DT" + Date.now().toString().slice(-8);
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
+
+function formatDate(date){
+  if(!date) return "";
+  const parts = date.split("-");
+  return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : date;
+}
+
+function render(){
+  const data = getData();
+  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  const filtered = data.filter(item =>
+    [item.id,item.patient,item.doctor,item.medicine]
+      .some(value => String(value || "").toLowerCase().includes(keyword))
+  );
+
+  document.getElementById("totalCount").textContent = data.length;
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById("todayCount").textContent =
+    data.filter(item => item.date === today).length;
+  document.getElementById("patientCount").textContent =
+    new Set(data.map(item => item.patient.trim().toLowerCase())).size;
+
+  const tbody = document.getElementById("prescriptionTable");
+
+  if(!filtered.length){
+    tbody.innerHTML = `<tr><td colspan="7" class="empty">Chưa có đơn thuốc phù hợp.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(item => `
+    <tr>
+      <td><strong>${escapeHTML(item.id)}</strong></td>
+      <td>${escapeHTML(item.patient)}</td>
+      <td>${formatDate(item.date)}</td>
+      <td>${escapeHTML(item.medicine)}</td>
+      <td>${escapeHTML(item.doctor)}</td>
+      <td><span class="badge">Đã lưu</span></td>
+      <td>
+        <div class="actions">
+          <button class="view" onclick="viewDetail('${item.id}')">Xem</button>
+          <button class="delete" onclick="deleteItem('${item.id}')">Xóa</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function openForm(){
+  document.getElementById("prescriptionForm").reset();
+  document.getElementById("prescriptionDate").value = new Date().toISOString().slice(0,10);
+  document.getElementById("formModal").style.display = "flex";
+}
+
+function closeForm(){
+  document.getElementById("formModal").style.display = "none";
+}
+
+document.getElementById("prescriptionForm").addEventListener("submit", function(event){
+  event.preventDefault();
+
+  const item = {
+    id: makeId(),
+    patient: document.getElementById("patientName").value.trim(),
+    doctor: document.getElementById("doctorName").value.trim(),
+    date: document.getElementById("prescriptionDate").value,
+    medicine: document.getElementById("medicineName").value.trim(),
+    dosage: document.getElementById("dosage").value.trim(),
+    notes: document.getElementById("notes").value.trim()
+  };
+
+  if(!item.patient || !item.doctor || !item.medicine || !item.dosage){
+    alert("Vui lòng điền đầy đủ các trường bắt buộc.");
+    return;
+  }
+
+  const data = getData();
+  data.unshift(item);
+  saveData(data);
+  closeForm();
+  render();
+  alert("Đã lưu đơn thuốc thành công!");
+});
+
+function viewDetail(id){
+  const item = getData().find(item => item.id === id);
+  if(!item) return;
+
+  document.getElementById("detailContent").innerHTML = `
+    <p><strong>Mã đơn:</strong> ${escapeHTML(item.id)}</p>
+    <p><strong>Bệnh nhân:</strong> ${escapeHTML(item.patient)}</p>
+    <p><strong>Bác sĩ:</strong> ${escapeHTML(item.doctor)}</p>
+    <p><strong>Ngày kê:</strong> ${formatDate(item.date)}</p>
+    <p><strong>Tên thuốc:</strong> ${escapeHTML(item.medicine)}</p>
+    <p><strong>Liều lượng và cách dùng:</strong><br>${escapeHTML(item.dosage)}</p>
+    <p><strong>Ghi chú:</strong><br>${escapeHTML(item.notes || "Không có")}</p>
+  `;
+
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetail(){
+  document.getElementById("detailModal").style.display = "none";
+}
+
+function deleteItem(id){
+  if(!confirm("Bạn có chắc chắn muốn xóa đơn thuốc này?")) return;
+  saveData(getData().filter(item => item.id !== id));
+  render();
+}
+
+window.addEventListener("click", function(event){
+  if(event.target.id === "formModal") closeForm();
+  if(event.target.id === "detailModal") closeDetail();
+});
+
+render();
+</script>
+</body>
+</html>
+```

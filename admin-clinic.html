@@ -1,104 +1,741 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Trị Hệ Thống - AI Clinic</title>
+
+    <title>Quản trị hệ thống</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #0f172a;
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.07);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            color: #64748b;
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btn {
+            padding: 7px 11px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .confirm-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .cancel-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 75px;
+                padding: 20px 10px;
+            }
+
+            .sidebar .brand-text,
+            .sidebar .link-text,
+            .sidebar .sidebar-footer {
+                display: none;
+            }
+
+            .sidebar-link {
+                justify-content: center;
+                padding: 14px 8px;
+                font-size: 20px;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <a href="index.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition"><i class="fa-solid fa-arrow-left text-sm"></i></a>
-                <div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
-                    <p class="text-xs text-slate-500">Trung Tâm Quản Trị Hệ Thống</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="analytics.html" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
-                    <i class="fa-solid fa-chart-line"></i><span>Báo cáo thống kê</span>
-                </a>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-7xl w-full mx-auto px-4 py-10 flex-1">
-        <div class="mb-8">
-            <h1 class="text-3xl font-extrabold text-slate-900">Quản Lý Tổng Quan Phòng Khám</h1>
-            <p class="text-slate-600 mt-1">Giám sát nhân sự bác sĩ, cấu hình hệ thống AI và kiểm soát hoạt động chung.</p>
-        </div>
+<body>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa-solid fa-user-doctor"></i></div>
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-semibold">Đội ngũ bác sĩ</p>
-                    <h3 class="text-2xl font-bold text-slate-900">12 Chuyên gia</h3>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa-solid fa-bed-pulse"></i></div>
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-semibold">Ca khám hôm nay</p>
-                    <h3 class="text-2xl font-bold text-slate-900">48 Lượt</h3>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa-solid fa-server"></i></div>
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-semibold">Trạng thái AI Server</p>
-                    <h3 class="text-lg font-bold text-emerald-600">Ổn định (99.9%)</h3>
-                </div>
-            </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <a href="index.html"
+           class="flex items-center gap-3 mb-10 text-white no-underline">
+
+            <span class="text-3xl">🏥</span>
+
+            <span class="brand-text text-xl font-bold">
+                AI Clinic
+            </span>
+        </a>
+
+        <nav>
+            <a href="#dashboard" class="sidebar-link active">
+                <span>📊</span>
+                <span class="link-text">Tổng quan</span>
+            </a>
+
+            <a href="#appointments" class="sidebar-link">
+                <span>📅</span>
+                <span class="link-text">Lịch khám</span>
+            </a>
+
+            <a href="#patients" class="sidebar-link">
+                <span>👥</span>
+                <span class="link-text">Bệnh nhân</span>
+            </a>
+            <a href="index.html" class="sidebar-link">
+                <span>🏠</span>
+                <span class="link-text">Trang chủ</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer absolute bottom-8 left-6 right-6">
+            <p class="text-xs text-slate-400">
+                Phòng khám AI
+            </p>
+            <p class="text-xs text-slate-500 mt-2">
+            
+            </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center"><i class="fa-solid fa-sliders text-blue-600 mr-2"></i>Cấu Hình Mô Hình AI</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
-                        <div>
-                            <p class="font-semibold text-sm">Hỗ trợ chẩn đoán hình ảnh tự động</p>
-                            <p class="text-xs text-slate-500">Tự động khoanh vùng bất thường X-quang</p>
-                        </div>
-                        <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold">Đang bật</span>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="flex flex-col md:flex-row justify-between gap-5 mb-8">
+
+            <div>
+                <p class="text-blue-600 font-semibold mb-2">
+                    BẢNG ĐIỀU KHIỂN
+                </p>
+
+                <h1 class="text-3xl font-bold text-gray-800">
+                    Quản trị phòng khám
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Theo dõi và quản lý hoạt động phòng khám.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-4 bg-white rounded-xl px-5 py-3 shadow-sm">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-2xl">
+                    👨‍💼
+                </div>
+
+                <div>
+                    <p class="font-bold text-gray-800">
+                        Quản trị viên
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        Quản lý hệ thống
+                    </p>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="mb-10">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <p class="text-gray-500 font-medium">
+                            Tổng lịch khám
+                        </p>
+                        <span class="text-2xl">📅</span>
                     </div>
-                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
-                        <div>
-                            <p class="font-semibold text-sm">Trợ lý ảo chatbot 24/7</p>
-                            <p class="text-xs text-slate-500">Phản hồi triệu chứng sơ bộ cho bệnh nhân</p>
-                        </div>
-                        <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold">Đang bật</span>
-                    </div>
+
+                    <h2 id="totalAppointments"
+                        class="text-3xl font-bold text-gray-800">
+                        0
+                    </h2>
+
+                    <p class="text-sm text-gray-400 mt-3">
+                        Tổng số lịch đã đặt
+                    </p>
                 </div>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <p class="text-gray-500 font-medium">
+                            Chờ xác nhận
+                        </p>
+                        <span class="text-2xl">⏳</span>
+                    </div>
+
+                    <h2 id="pendingAppointments"
+                        class="text-3xl font-bold text-yellow-600">
+                        0
+                    </h2>
+
+                    <p class="text-sm text-gray-400 mt-3">
+                        Lịch đang chờ xử lý
+                    </p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <p class="text-gray-500 font-medium">
+                            Đã xác nhận
+                        </p>
+                        <span class="text-2xl">✅</span>
+                    </div>
+
+                    <h2 id="confirmedAppointments"
+                        class="text-3xl font-bold text-green-600">
+                        0
+                    </h2>
+
+                    <p class="text-sm text-gray-400 mt-3">
+                        Lịch đã được xác nhận
+                    </p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <p class="text-gray-500 font-medium">
+                            Tổng bệnh nhân
+                        </p>
+                        <span class="text-2xl">👥</span>
+                    </div>
+
+                    <h2 id="totalPatients"
+                        class="text-3xl font-bold text-blue-600">
+                        0
+                    </h2>
+
+                    <p class="text-sm text-gray-400 mt-3">
+                        Số bệnh nhân có lịch khám
+                    </p>
+                </div>
+
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center"><i class="fa-solid fa-link text-teal-600 mr-2"></i>Truy Cập Nhanh Phân Hệ</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <a href="doctor-dashboard.html" class="p-4 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-stethoscope text-2xl text-blue-600 mb-2 group-hover:scale-110 transition"></i>
-                        <p class="font-semibold text-sm text-slate-800">Cổng Bác Sĩ</p>
-                    </a>
-                    <a href="inventory.html" class="p-4 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-pills text-2xl text-teal-600 mb-2 group-hover:scale-110 transition"></i>
-                        <p class="font-semibold text-sm text-slate-800">Kho Thuốc</p>
-                    </a>
-                    <a href="telemedicine.html" class="p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-video text-2xl text-indigo-600 mb-2 group-hover:scale-110 transition"></i>
-                        <p class="font-semibold text-sm text-slate-800">Khám Từ Xa</p>
-                    </a>
-                    <a href="analytics.html" class="p-4 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 rounded-xl transition text-center group">
-                        <i class="fa-solid fa-chart-pie text-2xl text-amber-600 mb-2 group-hover:scale-110 transition"></i>
-                        <p class="font-semibold text-sm text-slate-800">Thống Kê</p>
-                    </a>
+        </section>
+
+        <!-- APPOINTMENTS -->
+        <section id="appointments"
+                 class="bg-white rounded-2xl shadow-sm border border-gray-100 mb-10">
+
+            <div class="p-6 border-b border-gray-100">
+
+                <div class="flex flex-col md:flex-row justify-between gap-5">
+
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">
+                            Danh sách lịch khám
+                        </h2>
+
+                        <p class="text-sm text-gray-500 mt-2">
+                            Quản lý và cập nhật trạng thái lịch hẹn.
+                        </p>
+                    </div>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Tìm tên bệnh nhân, bác sĩ..."
+                        class="border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+                    >
+
                 </div>
+
             </div>
-        </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã lịch</th>
+                            <th>Bệnh nhân</th>
+                            <th>Chuyên khoa</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày khám</th>
+                            <th>Giờ</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="appointmentTable">
+                        <tr>
+                            <td colspan="8" class="empty-row">
+                                Đang tải dữ liệu...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- PATIENTS -->
+        <section id="patients"
+                 class="bg-white rounded-2xl shadow-sm border border-gray-100">
+
+            <div class="p-6 border-b border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800">
+                    Danh sách bệnh nhân
+                </h2>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Danh sách bệnh nhân được tổng hợp từ lịch khám demo.
+                </p>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ và tên</th>
+                            <th>Chuyên khoa gần nhất</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày khám gần nhất</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="patientTable">
+                        <tr>
+                            <td colspan="5" class="empty-row">
+                                Đang tải dữ liệu...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center text-gray-400 text-sm mt-10">
+           
+        </footer>
+
     </main>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const appointmentTable = document.getElementById("appointmentTable");
+        const patientTable = document.getElementById("patientTable");
+        const searchInput = document.getElementById("searchInput");
+
+        function getAppointments() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem("clinicAppointments") || "[]"
+                );
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveAppointments(appointments) {
+            localStorage.setItem(
+                "clinicAppointments",
+                JSON.stringify(appointments)
+            );
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return "—";
+
+            const date = new Date(dateString + "T00:00:00");
+
+            return isNaN(date.getTime())
+                ? escapeHTML(dateString)
+                : date.toLocaleDateString("vi-VN");
+        }
+
+        function getStatus(status) {
+            const statuses = {
+                pending: {
+                    label: "Chờ xác nhận",
+                    className: "status-pending"
+                },
+                confirmed: {
+                    label: "Đã xác nhận",
+                    className: "status-confirmed"
+                },
+                cancelled: {
+                    label: "Đã hủy",
+                    className: "status-cancelled"
+                }
+            };
+
+            return statuses[status] || statuses.pending;
+        }
+
+        function updateStatistics(appointments) {
+            const pending = appointments.filter(
+                item => item.status === "pending"
+            ).length;
+
+            const confirmed = appointments.filter(
+                item => item.status === "confirmed"
+            ).length;
+
+            const patients = new Set(
+                appointments
+                    .map(item => (item.name || "").trim().toLowerCase())
+                    .filter(Boolean)
+            );
+
+            document.getElementById("totalAppointments").textContent =
+                appointments.length;
+
+            document.getElementById("pendingAppointments").textContent =
+                pending;
+
+            document.getElementById("confirmedAppointments").textContent =
+                confirmed;
+
+            document.getElementById("totalPatients").textContent =
+                patients.size;
+        }
+
+        function renderAppointments() {
+            const appointments = getAppointments();
+
+            updateStatistics(appointments);
+
+            const keyword = searchInput.value.trim().toLowerCase();
+
+            const filtered = appointments.filter(item => {
+                const searchable = [
+                    item.name,
+                    item.doctor,
+                    item.specialty,
+                    item.code
+                ].filter(Boolean).join(" ").toLowerCase();
+
+                return searchable.includes(keyword);
+            });
+
+            if (filtered.length === 0) {
+                appointmentTable.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-row">
+                            ${appointments.length === 0
+                                ? "Chưa có lịch khám nào. Hãy đặt lịch để dữ liệu xuất hiện tại đây."
+                                : "Không tìm thấy lịch khám phù hợp."}
+                        </td>
+                    </tr>
+                `;
+            } else {
+                appointmentTable.innerHTML = filtered.map(item => {
+                    const status = getStatus(item.status);
+
+                    const originalIndex = appointments.indexOf(item);
+
+                    return `
+                        <tr>
+                            <td class="font-semibold text-blue-700">
+                                ${escapeHTML(item.code || "—")}
+                            </td>
+
+                            <td class="font-semibold text-gray-800">
+                                ${escapeHTML(item.name || "—")}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(item.specialty || "—")}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(item.doctor || "—")}
+                            </td>
+
+                            <td>
+                                ${formatDate(item.date)}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(item.time || "—")}
+                            </td>
+
+                            <td>
+                                <span class="status ${status.className}">
+                                    ${status.label}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="flex gap-2">
+
+                                    ${item.status !== "confirmed" &&
+                                      item.status !== "cancelled" ? `
+                                        <button
+                                            class="action-btn confirm-btn"
+                                            data-action="confirm"
+                                            data-index="${originalIndex}"
+                                        >
+                                            Xác nhận
+                                        </button>
+                                    ` : ""}
+
+                                    ${item.status !== "cancelled" ? `
+                                        <button
+                                            class="action-btn cancel-btn"
+                                            data-action="cancel"
+                                            data-index="${originalIndex}"
+                                        >
+                                            Hủy
+                                        </button>
+                                    ` : ""}
+
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+
+            renderPatients(appointments);
+        }
+
+        function renderPatients(appointments) {
+            const patientMap = new Map();
+
+            appointments.forEach(item => {
+                const name = (item.name || "").trim();
+
+                if (!name) return;
+
+                const key = name.toLowerCase();
+
+                if (!patientMap.has(key)) {
+                    patientMap.set(key, item);
+                    return;
+                }
+
+                const current = patientMap.get(key);
+
+                if ((item.date || "") > (current.date || "")) {
+                    patientMap.set(key, item);
+                }
+            });
+
+            const patients = Array.from(patientMap.values());
+
+            if (patients.length === 0) {
+                patientTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            Chưa có thông tin bệnh nhân.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            patientTable.innerHTML = patients.map((item, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+
+                    <td class="font-semibold text-gray-800">
+                        ${escapeHTML(item.name || "—")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.specialty || "—")}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.doctor || "—")}
+                    </td>
+
+                    <td>
+                        ${formatDate(item.date)}
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        appointmentTable.addEventListener("click", function(event) {
+            const button = event.target.closest("button[data-action]");
+
+            if (!button) return;
+
+            const index = Number(button.dataset.index);
+            const action = button.dataset.action;
+
+            const appointments = getAppointments();
+
+            if (!appointments[index]) return;
+
+            if (action === "confirm") {
+                appointments[index].status = "confirmed";
+            }
+
+            if (action === "cancel") {
+                const confirmed = window.confirm(
+                    "Bạn có chắc chắn muốn hủy lịch khám này?"
+                );
+
+                if (!confirmed) return;
+
+                appointments[index].status = "cancelled";
+            }
+
+            saveAppointments(appointments);
+            renderAppointments();
+        });
+
+        searchInput.addEventListener("input", renderAppointments);
+
+        document.querySelectorAll(".sidebar-link").forEach(link => {
+            link.addEventListener("click", function() {
+                document.querySelectorAll(".sidebar-link").forEach(item => {
+                    item.classList.remove("active");
+                });
+
+                if (this.getAttribute("href").startsWith("#")) {
+                    this.classList.add("active");
+                }
+            });
+        });
+
+        renderAppointments();
+    </script>
+
 </body>
 </html>
+```

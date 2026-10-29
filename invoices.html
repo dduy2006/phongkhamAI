@@ -1,0 +1,297 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý hóa đơn | AI Clinic</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#1e293b}
+.sidebar{position:fixed;left:0;top:0;width:245px;height:100vh;background:#123b72;color:white;padding:25px 16px;overflow:auto}
+.logo{font-size:23px;font-weight:bold;margin:0 10px 35px}
+.logo span{color:#60d5c2}
+.sidebar a{display:block;padding:14px 15px;margin:5px 0;color:#dbeafe;text-decoration:none;border-radius:9px;font-size:14px}
+.sidebar a:hover,.sidebar a.active{background:#2460a5;color:white}
+.main{margin-left:245px;padding:30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:15px}
+.topbar h1{font-size:27px}
+.topbar p{color:#64748b;margin-top:8px;font-size:14px}
+.user{background:white;padding:12px 18px;border-radius:12px;font-weight:bold}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:25px}
+.stat{background:white;padding:23px;border-radius:14px;box-shadow:0 3px 15px #0f172a08}
+.stat p{color:#64748b;font-size:14px}
+.stat h2{font-size:27px;margin-top:12px;color:#164e8a}
+.panel{background:white;padding:24px;border-radius:15px;box-shadow:0 3px 15px #0f172a08}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
+button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold}
+.primary{background:#1676d2;color:white}
+.search{margin-bottom:20px}
+.search input{width:100%;padding:12px;border:1px solid #dbe3ef;border-radius:8px;font-size:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:15px 12px;text-align:left;border-bottom:1px solid #edf1f7;font-size:14px}
+th{background:#f8fafc;color:#64748b}
+.badge{padding:6px 10px;border-radius:20px;font-size:12px;background:#dcfce7;color:#166534}
+.actions{display:flex;gap:7px}
+.view{background:#e0f2fe;color:#075985}
+.delete{background:#fee2e2;color:#b91c1c}
+.empty{text-align:center;color:#64748b;padding:30px}
+.modal{display:none;position:fixed;inset:0;background:#0f172a88;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal-box{background:white;width:550px;max-width:100%;max-height:90vh;overflow:auto;padding:25px;border-radius:15px}
+.modal-box h2{margin-bottom:20px}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;margin-bottom:7px;font-size:14px;font-weight:bold}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:1px solid #dbe3ef;border-radius:8px;font-size:14px}
+.form-group textarea{min-height:80px}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.cancel{background:#e2e8f0;color:#334155}
+.detail{line-height:1.9;white-space:pre-wrap}
+@media(max-width:900px){.sidebar{width:190px}.main{margin-left:190px;padding:20px}.stats{grid-template-columns:1fr}.panel{overflow-x:auto}}
+@media(max-width:600px){.sidebar{position:static;width:100%;height:auto}.sidebar a{display:inline-block}.main{margin:0;padding:15px}.topbar,.panel-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">AI <span>CLINIC</span></div>
+  <a href="index.html">🏠 Tổng quan</a>
+  <a href="patients.html">👥 Quản lý bệnh nhân</a>
+  <a href="doctors.html">👨‍⚕️ Quản lý bác sĩ</a>
+  <a href="doctor-schedule.html">📅 Lịch làm việc</a>
+  <a href="booking.html">📝 Đặt lịch khám</a>
+  <a href="medical-records.html">📋 Hồ sơ bệnh án</a>
+  <a href="prescriptions.html">💊 Quản lý đơn thuốc</a>
+  <a href="invoices.html" class="active">💳 Quản lý hóa đơn</a>
+  <a href="ai-consultation.html">🤖 Tư vấn AI</a>
+  <a href="admin.html">⚙️ Quản trị hệ thống</a>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div>
+      <h1>Quản lý hóa đơn</h1>
+      <p>Theo dõi hóa đơn và chi phí khám chữa bệnh</p>
+    </div>
+    <div class="user">👤 Quản trị viên</div>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><p>Tổng số hóa đơn</p><h2 id="totalCount">0</h2></div>
+    <div class="stat"><p>Tổng doanh thu ghi nhận</p><h2 id="revenue">0 ₫</h2></div>
+    <div class="stat"><p>Hóa đơn hôm nay</p><h2 id="todayCount">0</h2></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Danh sách hóa đơn</h2>
+      <button class="primary" onclick="openForm()">＋ Tạo hóa đơn</button>
+    </div>
+
+    <div class="search">
+      <input id="searchInput" placeholder="Tìm theo mã hóa đơn hoặc tên bệnh nhân..." oninput="render()">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã hóa đơn</th>
+          <th>Bệnh nhân</th>
+          <th>Ngày lập</th>
+          <th>Nội dung</th>
+          <th>Tổng tiền</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceTable"></tbody>
+    </table>
+  </section>
+</main>
+
+<div class="modal" id="formModal">
+  <div class="modal-box">
+    <h2>Tạo hóa đơn mới</h2>
+    <form id="invoiceForm">
+      <div class="form-group">
+        <label>Tên bệnh nhân *</label>
+        <input id="patient" required placeholder="Nhập tên bệnh nhân">
+      </div>
+      <div class="form-group">
+        <label>Ngày lập hóa đơn *</label>
+        <input id="date" type="date" required>
+      </div>
+      <div class="form-group">
+        <label>Nội dung thanh toán *</label>
+        <textarea id="description" required placeholder="Ví dụ: Phí khám, xét nghiệm..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Số tiền (VNĐ) *</label>
+        <input id="amount" type="number" min="0" step="1000" required placeholder="Nhập số tiền">
+      </div>
+      <div class="form-group">
+        <label>Trạng thái thanh toán</label>
+        <select id="status">
+          <option value="Đã thanh toán">Đã thanh toán</option>
+          <option value="Chưa thanh toán">Chưa thanh toán</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="cancel" onclick="closeForm()">Hủy</button>
+        <button type="submit" class="primary">Lưu hóa đơn</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-box">
+    <h2>Chi tiết hóa đơn</h2>
+    <div id="detailContent" class="detail"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeDetail()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = "clinicInvoices";
+
+function getData(){
+  try{return JSON.parse(localStorage.getItem(KEY)) || []}
+  catch(e){return []}
+}
+
+function saveData(data){
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function money(value){
+  return Number(value || 0).toLocaleString("vi-VN") + " ₫";
+}
+
+function formatDate(date){
+  if(!date)return "";
+  const p=date.split("-");
+  return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : date;
+}
+
+function render(){
+  const data=getData();
+  const keyword=document.getElementById("searchInput").value.toLowerCase().trim();
+
+  const filtered=data.filter(item =>
+    [item.id,item.patient,item.description]
+      .some(v=>String(v||"").toLowerCase().includes(keyword))
+  );
+
+  document.getElementById("totalCount").textContent=data.length;
+  document.getElementById("revenue").textContent=money(
+    data.filter(x=>x.status==="Đã thanh toán")
+        .reduce((sum,x)=>sum+Number(x.amount||0),0)
+  );
+
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById("todayCount").textContent=
+    data.filter(x=>x.date===today).length;
+
+  const tbody=document.getElementById("invoiceTable");
+
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="7" class="empty">Chưa có hóa đơn phù hợp.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML=filtered.map(item=>`
+    <tr>
+      <td><strong>${escapeHTML(item.id)}</strong></td>
+      <td>${escapeHTML(item.patient)}</td>
+      <td>${formatDate(item.date)}</td>
+      <td>${escapeHTML(item.description)}</td>
+      <td><strong>${money(item.amount)}</strong></td>
+      <td><span class="badge" style="${item.status==="Chưa thanh toán"?"background:#fef3c7;color:#92400e":""}">${escapeHTML(item.status)}</span></td>
+      <td>
+        <div class="actions">
+          <button class="view" onclick="viewDetail('${item.id}')">Xem</button>
+          <button class="delete" onclick="deleteItem('${item.id}')">Xóa</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function openForm(){
+  document.getElementById("invoiceForm").reset();
+  document.getElementById("date").value=new Date().toISOString().slice(0,10);
+  document.getElementById("formModal").style.display="flex";
+}
+
+function closeForm(){
+  document.getElementById("formModal").style.display="none";
+}
+
+document.getElementById("invoiceForm").addEventListener("submit",function(e){
+  e.preventDefault();
+
+  const item={
+    id:"HD"+Date.now().toString().slice(-8),
+    patient:document.getElementById("patient").value.trim(),
+    date:document.getElementById("date").value,
+    description:document.getElementById("description").value.trim(),
+    amount:Number(document.getElementById("amount").value),
+    status:document.getElementById("status").value
+  };
+
+  if(!item.patient || !item.description || !item.date || item.amount<0){
+    alert("Vui lòng kiểm tra lại thông tin.");
+    return;
+  }
+
+  const data=getData();
+  data.unshift(item);
+  saveData(data);
+  closeForm();
+  render();
+  alert("Đã lưu hóa đơn thành công!");
+});
+
+function viewDetail(id){
+  const item=getData().find(x=>x.id===id);
+  if(!item)return;
+
+  document.getElementById("detailContent").innerHTML=`
+    <p><strong>Mã hóa đơn:</strong> ${escapeHTML(item.id)}</p>
+    <p><strong>Bệnh nhân:</strong> ${escapeHTML(item.patient)}</p>
+    <p><strong>Ngày lập:</strong> ${formatDate(item.date)}</p>
+    <p><strong>Nội dung:</strong> ${escapeHTML(item.description)}</p>
+    <p><strong>Số tiền:</strong> ${money(item.amount)}</p>
+    <p><strong>Trạng thái:</strong> ${escapeHTML(item.status)}</p>
+  `;
+  document.getElementById("detailModal").style.display="flex";
+}
+
+function closeDetail(){
+  document.getElementById("detailModal").style.display="none";
+}
+
+function deleteItem(id){
+  if(!confirm("Bạn có chắc chắn muốn xóa hóa đơn này?"))return;
+  saveData(getData().filter(x=>x.id!==id));
+  render();
+}
+
+window.addEventListener("click",function(e){
+  if(e.target.id==="formModal")closeForm();
+  if(e.target.id==="detailModal")closeDetail();
+});
+
+render();
+</script>
+</body>
+</html>
+```

@@ -1,172 +1,404 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hồ Sơ Bệnh Án & Lịch Hẹn - AI Clinic</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome cho Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <title>Hồ sơ bệnh án | AI Clinic</title>
 
-    <!-- Thanh điều hướng (Navbar) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background: #f4f8fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .record-card {
+            background: white;
+            border: 1px solid #e5edf5;
+            border-radius: 16px;
+            padding: 24px;
+            transition: 0.2s;
+        }
+
+        .record-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff7db;
+            color: #a16207;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 50px 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <a href="index.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition">
-                    <i class="fa-solid fa-arrow-left text-sm"></i>
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-700">
+                🏥 AI Clinic
+            </a>
+
+            <nav class="hidden md:flex items-center gap-6 text-gray-600">
+                <a href="index.html" class="hover:text-blue-600">Trang chủ</a>
+                <a href="booking.html" class="hover:text-blue-600">Đặt lịch</a>
+                <a href="ai-consultation.html" class="hover:text-blue-600">Tư vấn AI</a>
+                <a href="medical-records.html" class="text-blue-700 font-semibold">
+                    Hồ sơ bệnh án
                 </a>
-                <div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
-                    <p class="text-xs text-slate-500">Cổng thông tin sức khỏe cá nhân</p>
-                </div>
-            </div>
-            <nav class="hidden md:flex space-x-8 font-medium">
-                <a href="index.html" class="hover:text-blue-600 transition">Trang chủ</a>
-                <a href="ai-consultation.html" class="hover:text-blue-600 transition">Tư vấn AI</a>
-                <a href="booking.html" class="hover:text-blue-600 transition">Đặt lịch khám</a>
-                <a href="medical-records.html" class="text-blue-600 font-semibold">Hồ sơ bệnh án</a>
+                <a href="login.html"
+                   class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+                    Đăng nhập
+                </a>
             </nav>
         </div>
     </header>
 
-    <!-- Nội dung chính -->
-    <main class="max-w-6xl w-full mx-auto px-4 py-10 flex-1">
-        
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold text-slate-900">Lịch Hẹn & Hồ Sơ Bệnh Án</h1>
-                <p class="text-slate-600 mt-1">Quản lý toàn bộ lịch khám sắp tới và lịch sử tư vấn AI của bạn.</p>
-            </div>
-            <a href="booking.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl shadow-lg shadow-blue-500/20 font-medium transition flex items-center space-x-2">
-                <i class="fa-solid fa-plus"></i>
-                <span>Đặt Lịch Khám Mới</span>
-            </a>
-        </div>
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
 
-        <!-- Thống kê nhanh -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-calendar-days"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Tổng số lịch hẹn</p>
-                    <h3 id="total-appointments" class="text-2xl font-bold text-slate-900">0</h3>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-user-doctor"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Trạng thái khám</p>
-                    <h3 class="text-lg font-bold text-teal-600">Sẵn sàng hỗ trợ</h3>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-robot"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Tư vấn AI</p>
-                    <h3 class="text-lg font-bold text-indigo-600">Đã kích hoạt 24/7</h3>
-                </div>
-            </div>
-        </div>
+        <!-- TITLE -->
+        <section class="mb-8">
+            <p class="text-blue-600 font-semibold mb-2">QUẢN LÝ HỒ SƠ</p>
 
-        <!-- Bảng danh sách lịch hẹn -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-slate-900">Danh Sách Lịch Hẹn Đã Đặt</h3>
-                <button onclick="clearAppointments()" class="text-red-500 hover:text-red-700 text-xs font-semibold transition flex items-center space-x-1">
-                    <i class="fa-solid fa-trash-can"></i>
-                    <span>Xóa lịch sử</span>
-                </button>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Hồ sơ bệnh án
+            </h1>
+
+            <p class="text-gray-500 text-lg">
+                Theo dõi lịch khám và thông tin các cuộc hẹn của bạn.
+            </p>
+        </section>
+
+        <!-- SUMMARY -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <p class="text-gray-500 mb-3">Tổng số lịch khám</p>
+                <h2 id="totalAppointments" class="text-3xl font-bold text-blue-700">
+                    0
+                </h2>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
-                            <th class="p-4 sm:px-6">Bệnh nhân</th>
-                            <th class="p-4 sm:px-6">Chuyên khoa</th>
-                            <th class="p-4 sm:px-6">Bác sĩ phụ trách</th>
-                            <th class="p-4 sm:px-6">Thời gian khám</th>
-                            <th class="p-4 sm:px-6">Triệu chứng</th>
-                            <th class="p-4 sm:px-6">Trạng thái</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointment-table-body" class="divide-y divide-slate-100 text-sm">
-                        <!-- Dữ liệu sẽ được load tự động bằng JavaScript -->
-                    </tbody>
-                </table>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <p class="text-gray-500 mb-3">Lịch đang chờ</p>
+                <h2 id="pendingAppointments" class="text-3xl font-bold text-yellow-600">
+                    0
+                </h2>
             </div>
-        </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <p class="text-gray-500 mb-3">Lịch đã xác nhận</p>
+                <h2 id="confirmedAppointments" class="text-3xl font-bold text-green-600">
+                    0
+                </h2>
+            </div>
+
+        </section>
+
+        <!-- SEARCH -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+
+            <div class="flex flex-col md:flex-row gap-4 justify-between">
+
+                <div class="flex-1">
+                    <label for="searchInput"
+                           class="block text-gray-700 font-semibold mb-2">
+                        Tìm kiếm lịch khám
+                    </label>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Nhập tên bệnh nhân, bác sĩ hoặc chuyên khoa..."
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+                    >
+                </div>
+
+                <div class="md:w-64">
+                    <label for="statusFilter"
+                           class="block text-gray-700 font-semibold mb-2">
+                        Lọc theo trạng thái
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+                    >
+                        <option value="all">Tất cả lịch khám</option>
+                        <option value="pending">Đang chờ</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- APPOINTMENT LIST -->
+        <section>
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Lịch khám của bạn
+                </h2>
+
+                <a href="booking.html"
+                   class="bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-blue-700">
+                    + Đặt lịch mới
+                </a>
+            </div>
+
+            <div id="appointmentList" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Dữ liệu lịch khám sẽ được hiển thị tại đây -->
+            </div>
+        </section>
+
     </main>
 
-    <!-- JavaScript tải dữ liệu từ localStorage -->
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center">
+            <h3 class="text-xl font-bold mb-2">AI Clinic</h3>
+            <p class="text-gray-400">
+                Hệ thống quản lý phòng khám tích hợp trí tuệ nhân tạo.
+            </p>
+            <p class="text-gray-500 text-sm mt-4">
+                © 2026 AI Clinic. Bản demo giao diện.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            loadAppointments();
-        });
+        const appointmentList = document.getElementById("appointmentList");
+        const searchInput = document.getElementById("searchInput");
+        const statusFilter = document.getElementById("statusFilter");
 
-        function loadAppointments() {
-            const tbody = document.getElementById('appointment-table-body');
-            const totalAppointmentsEl = document.getElementById('total-appointments');
-            
-            // Lấy dữ liệu từ localStorage được lưu ở trang booking.html
-            let appointments = JSON.parse(localStorage.getItem('ai_clinic_appointments')) || [];
-            
-            totalAppointmentsEl.textContent = appointments.length;
+        function getAppointments() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem("clinicAppointments") || "[]"
+                );
+            } catch (error) {
+                return [];
+            }
+        }
 
-            if (appointments.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-12 text-slate-400">
-                            <i class="fa-solid fa-folder-open text-4xl mb-3 block"></i>
-                            Chưa có lịch hẹn nào được đặt. Hãy vào mục <a href="booking.html" class="text-blue-600 underline font-medium">Đặt lịch khám</a> để tạo lịch hẹn mới!
-                        </td>
-                    </tr>
+        function formatDate(dateString) {
+            if (!dateString) return "Chưa có thông tin";
+
+            const date = new Date(dateString + "T00:00:00");
+
+            if (isNaN(date.getTime())) return dateString;
+
+            return date.toLocaleDateString("vi-VN");
+        }
+
+        function getStatusInfo(status) {
+            const statuses = {
+                pending: {
+                    label: "Đang chờ xác nhận",
+                    className: "status-pending"
+                },
+                confirmed: {
+                    label: "Đã xác nhận",
+                    className: "status-confirmed"
+                },
+                cancelled: {
+                    label: "Đã hủy",
+                    className: "status-cancelled"
+                }
+            };
+
+            return statuses[status] || statuses.pending;
+        }
+
+        function updateSummary(appointments) {
+            document.getElementById("totalAppointments").textContent =
+                appointments.length;
+
+            document.getElementById("pendingAppointments").textContent =
+                appointments.filter(item => item.status === "pending").length;
+
+            document.getElementById("confirmedAppointments").textContent =
+                appointments.filter(item => item.status === "confirmed").length;
+        }
+
+        function renderAppointments() {
+            const appointments = getAppointments();
+
+            updateSummary(appointments);
+
+            const keyword = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusFilter.value;
+
+            const filteredAppointments = appointments.filter(item => {
+                const searchableText = [
+                    item.name,
+                    item.doctor,
+                    item.specialty,
+                    item.code
+                ].filter(Boolean).join(" ").toLowerCase();
+
+                const matchesKeyword = searchableText.includes(keyword);
+
+                const matchesStatus =
+                    selectedStatus === "all" ||
+                    item.status === selectedStatus;
+
+                return matchesKeyword && matchesStatus;
+            });
+
+            if (filteredAppointments.length === 0) {
+                const hasAppointments = appointments.length > 0;
+
+                appointmentList.innerHTML = `
+                    <div class="empty-state col-span-full">
+                        <div class="text-5xl mb-4">📋</div>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">
+                            ${hasAppointments
+                                ? "Không tìm thấy lịch khám phù hợp"
+                                : "Bạn chưa có lịch khám nào"}
+                        </h3>
+
+                        <p class="text-gray-500 mb-6">
+                            ${hasAppointments
+                                ? "Hãy thử thay đổi từ khóa hoặc trạng thái tìm kiếm."
+                                : "Hãy đặt lịch khám để thông tin được hiển thị tại đây."}
+                        </p>
+
+                        <a href="booking.html"
+                           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700">
+                            Đặt lịch khám ngay
+                        </a>
+                    </div>
                 `;
+
                 return;
             }
 
-            tbody.innerHTML = '';
-            appointments.forEach((item, index) => {
-                const row = `
-                    <tr class="hover:bg-slate-50/80 transition">
-                        <td class="p-4 sm:px-6 font-semibold text-slate-900">
-                            ${item.name}
-                            <div class="text-xs font-normal text-slate-500">${item.phone}</div>
-                        </td>
-                        <td class="p-4 sm:px-6 text-slate-700">${item.department}</td>
-                        <td class="p-4 sm:px-6 text-slate-700">${item.doctor}</td>
-                        <td class="p-4 sm:px-6 text-slate-700">
-                            <div class="font-medium">${item.date}</div>
-                            <div class="text-xs text-slate-500">${item.time}</div>
-                        </td>
-                        <td class="p-4 sm:px-6 text-slate-600 truncate max-w-xs" title="${item.symptoms}">${item.symptoms || 'Không có mô tả'}</td>
-                        <td class="p-4 sm:px-6">
-                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs px-3 py-1 rounded-full font-semibold inline-flex items-center space-x-1">
-                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                                <span>${item.status}</span>
+            appointmentList.innerHTML = filteredAppointments.map(item => {
+                const status = getStatusInfo(item.status);
+
+                return `
+                    <article class="record-card">
+                        <div class="flex justify-between items-start gap-3 mb-5">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-2">
+                                    Mã lịch khám
+                                </p>
+
+                                <h3 class="text-lg font-bold text-blue-700">
+                                    ${escapeHTML(item.code || "Chưa có mã")}
+                                </h3>
+                            </div>
+
+                            <span class="status ${status.className}">
+                                ${status.label}
                             </span>
-                        </td>
-                    </tr>
+                        </div>
+
+                        <div class="space-y-4">
+
+                            <div>
+                                <p class="text-sm text-gray-500">Bệnh nhân</p>
+                                <p class="font-semibold text-gray-800">
+                                    ${escapeHTML(item.name || "Chưa có thông tin")}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-gray-500">Chuyên khoa</p>
+                                <p class="font-semibold text-gray-800">
+                                    ${escapeHTML(item.specialty || "Chưa có thông tin")}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-gray-500">Bác sĩ</p>
+                                <p class="font-semibold text-gray-800">
+                                    ${escapeHTML(item.doctor || "Chưa có thông tin")}
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Ngày khám</p>
+                                    <p class="font-semibold text-gray-800">
+                                        ${escapeHTML(formatDate(item.date))}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <p class="text-sm text-gray-500">Giờ khám</p>
+                                    <p class="font-semibold text-gray-800">
+                                        ${escapeHTML(item.time || "Chưa có thông tin")}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-gray-500">Triệu chứng</p>
+                                <p class="text-gray-700">
+                                    ${escapeHTML(item.symptoms || "Không có thông tin")}
+                                </p>
+                            </div>
+
+                        </div>
+                    </article>
                 `;
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
+            }).join("");
         }
 
-        function clearAppointments() {
-            if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử đặt lịch không?")) {
-                localStorage.removeItem('ai_clinic_appointments');
-                loadAppointments();
-            }
+        function escapeHTML(value) {
+            return String(value).replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
         }
+
+        searchInput.addEventListener("input", renderAppointments);
+        statusFilter.addEventListener("change", renderAppointments);
+
+        renderAppointments();
     </script>
+
 </body>
 </html>
+```

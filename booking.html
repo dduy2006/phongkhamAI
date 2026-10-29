@@ -3,157 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt Lịch Khám Thông Minh - AI Clinic</title>
-    <!-- Tailwind CSS CDN -->
+
+    <title>Đặt lịch khám - AI Clinic</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome cho Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Thanh điều hướng (Navbar) -->
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- THANH ĐIỀU HƯỚNG -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <a href="index.html" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md hover:bg-blue-700 transition">
-                    <i class="fa-solid fa-arrow-left text-sm"></i>
-                </a>
-                <div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">AI Clinic</span>
-                    <p class="text-xs text-slate-500">Hệ thống đặt lịch khám thông minh</p>
-                </div>
-            </div>
-            <nav class="hidden md:flex space-x-8 font-medium">
-                <a href="index.html" class="hover:text-blue-600 transition">Trang chủ</a>
-                <a href="ai-consultation.html" class="hover:text-blue-600 transition">Tư vấn AI</a>
-                <a href="booking.html" class="text-blue-600 font-semibold">Đặt lịch khám</a>
-                <a href="medical-records.html" class="hover:text-blue-600 transition">Hồ sơ bệnh án</a>
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="index.html" class="text-2xl font-bold text-blue-600">
+                <i class="fa-solid fa-heart-pulse"></i>
+                AI Clinic
+            </a>
+
+            <nav class="hidden md:flex gap-8 font-medium">
+                <a href="index.html" class="hover:text-blue-600">Trang chủ</a>
+                <a href="booking.html" class="text-blue-600">Đặt lịch khám</a>
+                <a href="ai-consultation.html" class="hover:text-blue-600">Tư vấn AI</a>
+                <a href="medical-records.html" class="hover:text-blue-600">Hồ sơ bệnh án</a>
             </nav>
+
+            <a href="login.html"
+               class="bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-blue-700">
+                Đăng nhập
+            </a>
+
         </div>
     </header>
 
-    <!-- Nội dung chính -->
-    <main class="max-w-4xl w-full mx-auto px-4 py-10 flex-1">
-        
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="max-w-5xl mx-auto px-6 py-12">
+
         <div class="text-center mb-10">
-            <h1 class="text-3xl font-extrabold text-slate-900">Đặt Lịch Khám Bệnh Trực Tuyến</h1>
-            <p class="text-slate-600 mt-2">Chọn chuyên khoa, bác sĩ và thời gian phù hợp. Hệ thống AI sẽ hỗ trợ tối ưu hóa lịch trình cho bạn.</p>
+
+            <div class="text-blue-600 text-5xl mb-5">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+
+            <h1 class="text-4xl font-extrabold text-slate-900">
+                Đặt lịch khám bệnh
+            </h1>
+
+            <p class="text-slate-500 mt-4">
+                Điền thông tin bên dưới để đăng ký lịch khám tại AI Clinic.
+            </p>
+
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-10">
-            <form id="booking-form" class="space-y-6">
-                
-                <!-- Thông tin bệnh nhân -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Họ và tên bệnh nhân</label>
-                        <input type="text" id="patient-name" required placeholder="Nhập họ và tên đầy đủ" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
+
+        <!-- FORM ĐẶT LỊCH -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-10">
+
+            <form id="booking-form" class="space-y-8">
+
+                <!-- THÔNG TIN BỆNH NHÂN -->
+                <section>
+
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">
+                        <i class="fa-solid fa-user text-blue-600 mr-2"></i>
+                        Thông tin bệnh nhân
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label for="patient-name"
+                                   class="block font-semibold text-sm mb-2">
+                                Họ và tên *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="patient-name"
+                                name="patientName"
+                                required
+                                placeholder="Nhập họ và tên"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+                        </div>
+
+                        <div>
+                            <label for="phone"
+                                   class="block font-semibold text-sm mb-2">
+                                Số điện thoại *
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                required
+                                placeholder="Nhập số điện thoại"
+                                pattern="[0-9+\s().-]{9,20}"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+                        </div>
+
+                        <div>
+                            <label for="email"
+                                   class="block font-semibold text-sm mb-2">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="example@email.com"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+                        </div>
+
+                        <div>
+                            <label for="birthdate"
+                                   class="block font-semibold text-sm mb-2">
+                                Ngày sinh
+                            </label>
+
+                            <input
+                                type="date"
+                                id="birthdate"
+                                name="birthdate"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+                        </div>
+
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Số điện thoại liên hệ</label>
-                        <input type="tel" id="patient-phone" required placeholder="Nhập số điện thoại (ví dụ: 0912345678)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
+
+                </section>
+
+
+                <!-- THÔNG TIN LỊCH KHÁM -->
+                <section>
+
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">
+                        <i class="fa-solid fa-stethoscope text-blue-600 mr-2"></i>
+                        Thông tin lịch khám
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+
+                        <!-- CHUYÊN KHOA -->
+                        <div>
+                            <label for="specialty"
+                                   class="block font-semibold text-sm mb-2">
+                                Chuyên khoa *
+                            </label>
+
+                            <select
+                                id="specialty"
+                                name="specialty"
+                                required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+
+                                <option value="">-- Chọn chuyên khoa --</option>
+                                <option value="noi">Nội khoa</option>
+                                <option value="ngoai">Ngoại khoa</option>
+                                <option value="nhi">Nhi khoa</option>
+                                <option value="tim-mach">Tim mạch</option>
+                                <option value="da-lieu">Da liễu</option>
+                                <option value="mat">Mắt</option>
+                                <option value="tai-mui-hong">Tai Mũi Họng</option>
+                                <option value="rang-ham-mat">Răng Hàm Mặt</option>
+
+                            </select>
+                        </div>
+
+
+                        <!-- BÁC SĨ -->
+                        <div>
+                            <label for="doctor"
+                                   class="block font-semibold text-sm mb-2">
+                                Bác sĩ *
+                            </label>
+
+                            <select
+                                id="doctor"
+                                name="doctor"
+                                required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+
+                                <option value="">-- Chọn bác sĩ --</option>
+                                <option value="doctor-1">Bác sĩ Nguyễn Văn An</option>
+                                <option value="doctor-2">Bác sĩ Trần Thị Mai</option>
+                                <option value="doctor-3">Bác sĩ Lê Minh Tuấn</option>
+                                <option value="doctor-4">Bác sĩ Phạm Thu Hà</option>
+
+                            </select>
+                        </div>
+
+
+                        <!-- NGÀY KHÁM -->
+                        <div>
+                            <label for="appointment-date"
+                                   class="block font-semibold text-sm mb-2">
+                                Ngày khám *
+                            </label>
+
+                            <input
+                                type="date"
+                                id="appointment-date"
+                                name="appointmentDate"
+                                required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+                        </div>
+
+
+                        <!-- GIỜ KHÁM -->
+                        <div>
+                            <label for="appointment-time"
+                                   class="block font-semibold text-sm mb-2">
+                                Giờ khám *
+                            </label>
+
+                            <select
+                                id="appointment-time"
+                                name="appointmentTime"
+                                required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50">
+
+                                <option value="">-- Chọn giờ khám --</option>
+                                <option value="08:00">08:00</option>
+                                <option value="08:30">08:30</option>
+                                <option value="09:00">09:00</option>
+                                <option value="09:30">09:30</option>
+                                <option value="10:00">10:00</option>
+                                <option value="10:30">10:30</option>
+                                <option value="13:30">13:30</option>
+                                <option value="14:00">14:00</option>
+                                <option value="14:30">14:30</option>
+                                <option value="15:00">15:00</option>
+                                <option value="15:30">15:30</option>
+
+                            </select>
+                        </div>
+
                     </div>
+
+                </section>
+
+
+                <!-- TRIỆU CHỨNG -->
+                <section>
+
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">
+                        <i class="fa-solid fa-notes-medical text-blue-600 mr-2"></i>
+                        Thông tin sức khỏe
+                    </h2>
+
+                    <div>
+                        <label for="symptoms"
+                               class="block font-semibold text-sm mb-2">
+                            Triệu chứng hoặc lý do khám
+                        </label>
+
+                        <textarea
+                            id="symptoms"
+                            name="symptoms"
+                            rows="5"
+                            placeholder="Mô tả triệu chứng hoặc lý do bạn muốn đi khám..."
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50"></textarea>
+                    </div>
+
+                </section>
+
+
+                <!-- LƯU Ý -->
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-5">
+
+                    <p class="text-blue-800 text-sm leading-7">
+                        <i class="fa-solid fa-circle-info mr-2"></i>
+                        Thông tin đặt lịch sẽ được ghi nhận trong trình duyệt
+                        ở phiên bản giao diện thử nghiệm. Lịch khám chỉ được
+                        xác nhận chính thức sau khi hệ thống kiểm tra và xác nhận.
+                    </p>
+
                 </div>
 
-                <!-- Chọn Chuyên khoa & Bác sĩ -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Chọn chuyên khoa</label>
-                        <select id="department" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
-                            <option value="Tổng quát">Khoa Khám Tổng Quát</option>
-                            <option value="Tim mạch">Khoa Tim Mạch & Huyết Áp</option>
-                            <option value="Nhi khoa">Khoa Nhi</option>
-                            <option value="Da liễu">Khoa Da Liễu & Thẩm Mỹ</option>
-                            <option value="Hô hấp">Khoa Hô Hấp</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Chọn bác sĩ chuyên khoa</label>
-                        <select id="doctor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
-                            <option value="BS. Nguyễn Văn An">BS. CKII. Nguyễn Văn An</option>
-                            <option value="BS. Trần Thị Mai">ThS.BS. Trần Thị Mai</option>
-                            <option value="BS. Lê Hoàng Long">PGS.TS. Lê Hoàng Long</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- Chọn Ngày và Giờ khám -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày khám dự kiến</label>
-                        <input type="date" id="booking-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Khung giờ khám</label>
-                        <select id="booking-time" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm">
-                            <option value="08:00 - 09:00">08:00 - 09:00 (Sáng)</option>
-                            <option value="09:30 - 10:30">09:30 - 10:30 (Sáng)</option>
-                            <option value="14:00 - 15:00">14:00 - 15:00 (Chiều)</option>
-                            <option value="16:00 - 17:00">16:00 - 17:00 (Chiều)</option>
-                        </select>
-                    </div>
-                </div>
+                <!-- NÚT XÁC NHẬN -->
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition">
 
-                <!-- Mô tả triệu chứng bệnh -->
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Mô tả triệu chứng hoặc lý do khám</label>
-                    <textarea id="symptoms" rows="3" placeholder="Nhập chi tiết triệu chứng của bạn để AI và bác sĩ chuẩn bị trước khi khám..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition text-sm"></textarea>
-                </div>
+                    <i class="fa-solid fa-calendar-check mr-2"></i>
+                    Xác nhận đặt lịch khám
 
-                <!-- Nút xác nhận đặt lịch -->
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 transition flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Xác Nhận Đặt Lịch Khám</span>
                 </button>
+
             </form>
+
         </div>
+
     </main>
 
-    <!-- Modal Thông báo thành công (Ẩn mặc định) -->
-    <div id="success-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl animate-fade-in">
-            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+
+    <!-- MODAL THÔNG BÁO -->
+    <div id="success-modal"
+         class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4">
+
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl">
+
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <h3 class="text-2xl font-bold text-slate-900 mb-2">Đặt Lịch Thành Công!</h3>
-            <p class="text-slate-600 text-sm mb-6">Lịch hẹn của bạn đã được ghi nhận vào hệ thống AI Clinic. Chúng tôi đã gửi thông tin xác nhận qua tin nhắn SMS/Email.</p>
-            <div class="flex space-x-4">
-                <a href="medical-records.html" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 rounded-xl transition text-sm">Xem Lịch Hẹn</a>
-                <a href="index.html" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition text-sm">Về Trang Chủ</a>
+
+            <h2 class="text-2xl font-bold text-slate-900 mb-3">
+                Đã ghi nhận thông tin!
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                Thông tin đặt lịch đã được lưu trên trình duyệt.
+                Đây chưa phải xác nhận lịch khám chính thức.
+            </p>
+
+            <div class="bg-slate-50 rounded-xl p-4 text-left mb-6">
+                <p class="text-sm text-slate-500 mb-2">Mã lịch hẹn</p>
+                <p id="appointment-code" class="font-bold text-blue-600 text-lg"></p>
             </div>
+
+            <button
+                id="close-modal"
+                type="button"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl">
+                Hoàn tất
+            </button>
+
         </div>
+
     </div>
 
-    <!-- JavaScript xử lý form đặt lịch -->
-    <script>
-        const bookingForm = document.getElementById('booking-form');
-        const successModal = document.getElementById('success-modal');
 
-        bookingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Lấy dữ liệu người dùng nhập
-            const bookingData = {
-                name: document.getElementById('patient-name').value,
-                phone: document.getElementById('patient-phone').value,
-                department: document.getElementById('department').value,
-                doctor: document.getElementById('doctor').value,
-                date: document.getElementById('booking-date').value,
-                time: document.getElementById('booking-time').value,
-                symptoms: document.getElementById('symptoms').value,
-                status: 'Đã xác nhận'
+    <!-- JAVASCRIPT -->
+    <script>
+        const bookingForm = document.getElementById("booking-form");
+        const successModal = document.getElementById("success-modal");
+        const closeModal = document.getElementById("close-modal");
+
+        const dateInput = document.getElementById("appointment-date");
+
+        // Không cho chọn ngày trong quá khứ
+        const today = new Date();
+        const localDate = new Date(
+            today.getTime() - today.getTimezoneOffset() * 60000
+        ).toISOString().split("T")[0];
+
+        dateInput.min = localDate;
+
+
+        // Xử lý gửi biểu mẫu
+        bookingForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(bookingForm);
+
+            const appointment = {
+                id: "AC-" + Date.now(),
+                patientName: formData.get("patientName"),
+                phone: formData.get("phone"),
+                email: formData.get("email"),
+                birthdate: formData.get("birthdate"),
+                specialty: formData.get("specialty"),
+                doctor: formData.get("doctor"),
+                appointmentDate: formData.get("appointmentDate"),
+                appointmentTime: formData.get("appointmentTime"),
+                symptoms: formData.get("symptoms"),
+                status: "Chờ xác nhận",
+                createdAt: new Date().toISOString()
             };
 
-            // Lưu vào LocalStorage để các trang khác (như hồ sơ bệnh án hoặc dashboard bác sĩ) có thể đọc được
-            let appointments = JSON.parse(localStorage.getItem('ai_clinic_appointments')) || [];
-            appointments.push(bookingData);
-            localStorage.setItem('ai_clinic_appointments', JSON.stringify(appointments));
+            // Lưu lịch hẹn thử nghiệm trên trình duyệt
+            try {
+                const appointments = JSON.parse(
+                    localStorage.getItem("clinicAppointments") || "[]"
+                );
 
-            // Hiển thị modal thành công
-            successModal.classList.remove('hidden');
-            successModal.classList.add('flex');
+                appointments.push(appointment);
+
+                localStorage.setItem(
+                    "clinicAppointments",
+                    JSON.stringify(appointments)
+                );
+
+            } catch (error) {
+                alert("Không thể lưu lịch hẹn trên trình duyệt.");
+                return;
+            }
+
+            document.getElementById("appointment-code").textContent =
+                appointment.id;
+
+            successModal.classList.remove("hidden");
+            successModal.classList.add("flex");
+        });
+
+
+        // Đóng thông báo
+        closeModal.addEventListener("click", function () {
+            successModal.classList.add("hidden");
+            successModal.classList.remove("flex");
+
+            bookingForm.reset();
         });
     </script>
+
 </body>
 </html>

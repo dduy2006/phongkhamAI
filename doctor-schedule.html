@@ -1,0 +1,696 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý lịch bác sĩ | AI Clinic</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .schedule-card {
+            transition: 0.2s ease;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-700">
+                🏥 AI Clinic
+            </a>
+
+            <nav class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="index.html" class="hover:text-blue-600">Trang chủ</a>
+                <a href="booking.html" class="hover:text-blue-600">Đặt lịch</a>
+                <a href="medical-records.html" class="hover:text-blue-600">Hồ sơ bệnh án</a>
+                <a href="doctors.html" class="hover:text-blue-600">Bác sĩ</a>
+                <a href="doctor-schedule.html" class="text-blue-700 font-bold">Lịch làm việc</a>
+                <a href="admin.html" class="hover:text-blue-600">Quản trị</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- TITLE -->
+        <section class="mb-8">
+            <p class="text-blue-600 font-semibold text-sm mb-2">
+                HỆ THỐNG QUẢN LÝ PHÒNG KHÁM
+            </p>
+
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-5">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900">
+                        Lịch làm việc bác sĩ
+                    </h1>
+
+                    <p class="text-slate-500 mt-3">
+                        Quản lý thời gian làm việc và lịch khám của đội ngũ bác sĩ.
+                    </p>
+                </div>
+
+                <button
+                    onclick="openScheduleForm()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md">
+                    + Thêm lịch làm việc
+                </button>
+            </div>
+        </section>
+
+        <!-- STATISTICS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Tổng số lịch</p>
+                <h2 id="totalSchedules" class="text-3xl font-bold text-blue-700 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Lịch hôm nay</p>
+                <h2 id="todaySchedules" class="text-3xl font-bold text-emerald-600 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Số bác sĩ có lịch</p>
+                <h2 id="activeDoctors" class="text-3xl font-bold text-violet-600 mt-3">0</h2>
+            </div>
+
+        </section>
+
+        <!-- SEARCH AND FILTER -->
+        <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div>
+                    <label for="searchInput" class="block text-sm font-semibold mb-2">
+                        Tìm kiếm bác sĩ
+                    </label>
+
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Nhập tên bác sĩ..."
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label for="dateFilter" class="block text-sm font-semibold mb-2">
+                        Lọc theo ngày
+                    </label>
+
+                    <input
+                        id="dateFilter"
+                        type="date"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label for="shiftFilter" class="block text-sm font-semibold mb-2">
+                        Lọc theo ca làm việc
+                    </label>
+
+                    <select
+                        id="shiftFilter"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+
+                        <option value="">Tất cả ca</option>
+                        <option value="Sáng">Ca sáng</option>
+                        <option value="Chiều">Ca chiều</option>
+                        <option value="Tối">Ca tối</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SCHEDULE LIST -->
+        <section>
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold">Danh sách lịch làm việc</h2>
+                <span id="resultCount" class="text-sm text-slate-500"></span>
+            </div>
+
+            <div id="scheduleList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <div id="emptyState" class="hidden bg-white rounded-2xl p-12 text-center">
+                <div class="text-5xl mb-4">📅</div>
+                <h3 class="text-xl font-bold mb-2">Không tìm thấy lịch làm việc</h3>
+                <p class="text-slate-500">Hãy thay đổi bộ lọc hoặc thêm lịch mới.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADD SCHEDULE MODAL -->
+    <div id="scheduleModal"
+         class="hidden fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-4">
+
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-xl">
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Thêm lịch làm việc</h2>
+
+                <button onclick="closeScheduleForm()"
+                        class="text-2xl text-slate-400 hover:text-slate-700">
+                    &times;
+                </button>
+            </div>
+
+            <form id="scheduleForm" class="space-y-4">
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Tên bác sĩ *
+                    </label>
+
+                    <input
+                        id="doctorName"
+                        type="text"
+                        required
+                        placeholder="Nhập tên bác sĩ"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Chuyên khoa
+                    </label>
+
+                    <input
+                        id="doctorSpecialty"
+                        type="text"
+                        placeholder="Ví dụ: Tim mạch"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Ngày làm việc *
+                    </label>
+
+                    <input
+                        id="scheduleDate"
+                        type="date"
+                        required
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">
+                            Giờ bắt đầu *
+                        </label>
+
+                        <input
+                            id="startTime"
+                            type="time"
+                            required
+                            class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">
+                            Giờ kết thúc *
+                        </label>
+
+                        <input
+                            id="endTime"
+                            type="time"
+                            required
+                            class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Ca làm việc *
+                    </label>
+
+                    <select
+                        id="shift"
+                        required
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+
+                        <option value="">-- Chọn ca làm việc --</option>
+                        <option value="Sáng">Ca sáng</option>
+                        <option value="Chiều">Ca chiều</option>
+                        <option value="Tối">Ca tối</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Ghi chú
+                    </label>
+
+                    <textarea
+                        id="scheduleNote"
+                        rows="3"
+                        placeholder="Nhập ghi chú nếu có..."
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button
+                        type="button"
+                        onclick="closeScheduleForm()"
+                        class="flex-1 border border-slate-200 rounded-xl py-3 font-semibold hover:bg-slate-50">
+                        Hủy
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="flex-1 bg-blue-600 text-white rounded-xl py-3 font-semibold hover:bg-blue-700">
+                        Lưu lịch
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-slate-500">
+            © 2026 AI Clinic - Hệ thống quản lý phòng khám thông minh.
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = "clinicDoctorSchedules";
+
+        // Dữ liệu lịch làm việc mẫu
+        const defaultSchedules = [
+            {
+                id: 1,
+                doctorName: "Nguyễn Minh Anh",
+                specialty: "Tim mạch",
+                date: getToday(),
+                startTime: "08:00",
+                endTime: "11:30",
+                shift: "Sáng",
+                note: "Khám bệnh theo lịch hẹn."
+            },
+            {
+                id: 2,
+                doctorName: "Trần Quốc Bảo",
+                specialty: "Nội khoa",
+                date: getToday(),
+                startTime: "13:30",
+                endTime: "17:00",
+                shift: "Chiều",
+                note: "Khám bệnh tại phòng khám."
+            },
+            {
+                id: 3,
+                doctorName: "Lê Thu Hà",
+                specialty: "Nhi khoa",
+                date: getTomorrow(),
+                startTime: "08:00",
+                endTime: "11:30",
+                shift: "Sáng",
+                note: "Khám và tư vấn sức khỏe trẻ em."
+            }
+        ];
+
+        function getToday() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function getTomorrow() {
+            const date = new Date();
+            date.setDate(date.getDate() + 1);
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        // Lấy lịch từ localStorage
+        function getSchedules() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+
+                if (data === null) {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(defaultSchedules)
+                    );
+
+                    return [...defaultSchedules];
+                }
+
+                const schedules = JSON.parse(data);
+
+                return Array.isArray(schedules) ? schedules : [];
+            } catch (error) {
+                console.error("Không thể đọc lịch làm việc:", error);
+                return [];
+            }
+        }
+
+        // Lưu lịch
+        function saveSchedules(schedules) {
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(schedules)
+                );
+
+                return true;
+            } catch (error) {
+                alert("Không thể lưu lịch làm việc.");
+                return false;
+            }
+        }
+
+        // Chuyển ngày thành định dạng dễ đọc
+        function formatDate(dateString) {
+            if (!dateString) return "Chưa xác định";
+
+            const parts = dateString.split("-");
+
+            if (parts.length !== 3) return dateString;
+
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // Chống chèn HTML không an toàn
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        // Hiển thị lịch
+        function renderSchedules() {
+            const schedules = getSchedules();
+
+            const searchValue = document
+                .getElementById("searchInput")
+                .value.trim()
+                .toLowerCase();
+
+            const selectedDate =
+                document.getElementById("dateFilter").value;
+
+            const selectedShift =
+                document.getElementById("shiftFilter").value;
+
+            const filteredSchedules = schedules.filter(schedule => {
+                const doctorName =
+                    (schedule.doctorName || "").toLowerCase();
+
+                const matchesSearch = doctorName.includes(searchValue);
+
+                const matchesDate =
+                    !selectedDate || schedule.date === selectedDate;
+
+                const matchesShift =
+                    !selectedShift || schedule.shift === selectedShift;
+
+                return matchesSearch && matchesDate && matchesShift;
+            });
+
+            const list = document.getElementById("scheduleList");
+            const emptyState = document.getElementById("emptyState");
+
+            list.innerHTML = "";
+
+            filteredSchedules.sort((a, b) => {
+                return (
+                    String(a.date).localeCompare(String(b.date)) ||
+                    String(a.startTime).localeCompare(String(b.startTime))
+                );
+            });
+
+            filteredSchedules.forEach(schedule => {
+                const card = document.createElement("div");
+
+                card.className =
+                    "schedule-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm";
+
+                let shiftColor = "bg-blue-50 text-blue-700";
+
+                if (schedule.shift === "Chiều") {
+                    shiftColor = "bg-amber-50 text-amber-700";
+                }
+
+                if (schedule.shift === "Tối") {
+                    shiftColor = "bg-violet-50 text-violet-700";
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-3">
+                        <span class="px-3 py-1.5 rounded-full text-sm font-semibold ${shiftColor}">
+                            Ca ${escapeHTML(schedule.shift)}
+                        </span>
+
+                        <span class="text-sm text-slate-400">
+                            #${Number(schedule.id)}
+                        </span>
+                    </div>
+
+                    <h3 class="text-xl font-bold mt-5 text-slate-900">
+                        ${escapeHTML(schedule.doctorName)}
+                    </h3>
+
+                    <p class="text-blue-600 text-sm mt-2">
+                        ${escapeHTML(schedule.specialty || "Chưa cập nhật chuyên khoa")}
+                    </p>
+
+                    <div class="mt-5 space-y-3 text-sm text-slate-600">
+
+                        <p>
+                            <span class="font-semibold text-slate-800">📅 Ngày:</span>
+                            ${formatDate(schedule.date)}
+                        </p>
+
+                        <p>
+                            <span class="font-semibold text-slate-800">🕒 Thời gian:</span>
+                            ${escapeHTML(schedule.startTime)} - ${escapeHTML(schedule.endTime)}
+                        </p>
+
+                        <p>
+                            <span class="font-semibold text-slate-800">📝 Ghi chú:</span>
+                            ${escapeHTML(schedule.note || "Không có ghi chú")}
+                        </p>
+
+                    </div>
+
+                    <button
+                        onclick="deleteSchedule(${Number(schedule.id)})"
+                        class="mt-6 w-full border border-red-200 text-red-600 hover:bg-red-50 rounded-xl py-3 font-semibold">
+                        🗑 Xóa lịch
+                    </button>
+                `;
+
+                list.appendChild(card);
+            });
+
+            // Thống kê
+            document.getElementById("totalSchedules").textContent =
+                schedules.length;
+
+            document.getElementById("todaySchedules").textContent =
+                schedules.filter(item => item.date === getToday()).length;
+
+            document.getElementById("activeDoctors").textContent =
+                new Set(
+                    schedules.map(item => item.doctorName).filter(Boolean)
+                ).size;
+
+            document.getElementById("resultCount").textContent =
+                `Hiển thị ${filteredSchedules.length} / ${schedules.length} lịch`;
+
+            emptyState.classList.toggle(
+                "hidden",
+                filteredSchedules.length !== 0
+            );
+        }
+
+        // Mở biểu mẫu
+        function openScheduleForm() {
+            const modal = document.getElementById("scheduleModal");
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            document.getElementById("scheduleDate").min = getToday();
+        }
+
+        // Đóng biểu mẫu
+        function closeScheduleForm() {
+            const modal = document.getElementById("scheduleModal");
+
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+
+            document.getElementById("scheduleForm").reset();
+        }
+
+        // Thêm lịch
+        document.getElementById("scheduleForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+
+                const doctorName =
+                    document.getElementById("doctorName").value.trim();
+
+                const specialty =
+                    document.getElementById("doctorSpecialty").value.trim();
+
+                const date =
+                    document.getElementById("scheduleDate").value;
+
+                const startTime =
+                    document.getElementById("startTime").value;
+
+                const endTime =
+                    document.getElementById("endTime").value;
+
+                const shift =
+                    document.getElementById("shift").value;
+
+                const note =
+                    document.getElementById("scheduleNote").value.trim();
+
+                if (!doctorName || !date || !startTime || !endTime || !shift) {
+                    alert("Vui lòng điền đầy đủ các trường bắt buộc.");
+                    return;
+                }
+
+                if (endTime <= startTime) {
+                    alert("Giờ kết thúc phải sau giờ bắt đầu.");
+                    return;
+                }
+
+                if (date < getToday()) {
+                    alert("Không thể tạo lịch cho ngày đã qua.");
+                    return;
+                }
+
+                const schedules = getSchedules();
+
+                // Kiểm tra lịch trùng giờ của cùng bác sĩ
+                const hasConflict = schedules.some(schedule => {
+                    if (
+                        schedule.doctorName.trim().toLowerCase() !==
+                            doctorName.toLowerCase() ||
+                        schedule.date !== date
+                    ) {
+                        return false;
+                    }
+
+                    return (
+                        startTime < schedule.endTime &&
+                        endTime > schedule.startTime
+                    );
+                });
+
+                if (hasConflict) {
+                    alert("Bác sĩ này đã có lịch trùng giờ trong ngày đã chọn.");
+                    return;
+                }
+
+                const newSchedule = {
+                    id: Date.now(),
+                    doctorName,
+                    specialty,
+                    date,
+                    startTime,
+                    endTime,
+                    shift,
+                    note
+                };
+
+                schedules.push(newSchedule);
+
+                if (saveSchedules(schedules)) {
+                    closeScheduleForm();
+                    renderSchedules();
+
+                    alert("Đã thêm lịch làm việc thành công!");
+                }
+            }
+        );
+
+        // Xóa lịch
+        function deleteSchedule(id) {
+            const schedules = getSchedules();
+
+            const schedule = schedules.find(item => item.id === id);
+
+            if (!schedule) {
+                alert("Không tìm thấy lịch làm việc.");
+                return;
+            }
+
+            const confirmed = confirm(
+                `Bạn có chắc muốn xóa lịch của bác sĩ ${schedule.doctorName} ngày ${formatDate(schedule.date)} không?`
+            );
+
+            if (!confirmed) return;
+
+            const updatedSchedules =
+                schedules.filter(item => item.id !== id);
+
+            if (saveSchedules(updatedSchedules)) {
+                renderSchedules();
+                alert("Đã xóa lịch làm việc thành công!");
+            }
+        }
+
+        // Sự kiện tìm kiếm và lọc
+        document.getElementById("searchInput").addEventListener(
+            "input",
+            renderSchedules
+        );
+
+        document.getElementById("dateFilter").addEventListener(
+            "change",
+            renderSchedules
+        );
+
+        document.getElementById("shiftFilter").addEventListener(
+            "change",
+            renderSchedules
+        );
+
+        // Khởi tạo trang
+        renderSchedules();
+    </script>
+
+</body>
+</html>
+```

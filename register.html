@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -11,26 +10,81 @@
 <body class="bg-slate-900 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
         <div class="text-center mb-8">
-            <div class="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-teal-500/30"><i class="fa-solid fa-user-plus"></i></div>
+            <div class="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
             <h2 class="text-2xl font-bold text-slate-900">Đăng Ký Tài Khoản</h2>
             <p class="text-xs text-slate-500 mt-1">Trải nghiệm chăm sóc sức khỏe thông minh</p>
         </div>
-        <form action="login.html" class="space-y-4">
+
+        <!-- Form Đăng Ký -->
+        <form id="form-register" class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Họ và tên</label>
-                <input type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 text-sm" placeholder="Nhập họ tên đầy đủ...">
+                <input type="text" id="hoten" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500" placeholder="Nguyễn Văn A">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email / Số điện thoại</label>
-                <input type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 text-sm" placeholder="Nhập email hoặc SĐT...">
+                <input type="text" id="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500" placeholder="example@email.com">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mật khẩu</label>
-                <input type="password" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 text-sm" placeholder="••••••••">
+                <input type="password" id="matkhau" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500" placeholder="Nhập mật khẩu">
             </div>
-            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-500/30 transition text-sm">Tạo Tài Khoản</button>
+            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200">Đăng Ký</button>
         </form>
+
         <p class="text-center text-xs text-slate-500 mt-6">Đã có tài khoản? <a href="login.html" class="text-teal-600 font-semibold hover:underline">Đăng nhập</a></p>
     </div>
+
+    <!-- Đoạn code JavaScript xử lý kết nối Google Sheets ngay trong file -->
+    <script>
+        const formRegister = document.querySelector("#form-register");
+
+        if (formRegister) {
+            formRegister.addEventListener("submit", function(e) {
+                e.preventDefault(); // Chặn trang web load lại
+
+                // Lấy giá trị từ các ô input
+                const hoTen = document.querySelector("#hoten").value;
+                const email = document.querySelector("#email").value;
+                const matKhau = document.querySelector("#matkhau").value;
+
+                // Đóng gói dữ liệu chuẩn bị gửi lên Google Sheets
+                const duLieuDangKy = {
+                    data: [
+                        {
+                            "ho ten": hoTen,
+                            "gmail": email,
+                            "matkhau": matKhau,
+                            "ngaydatlich": new Date().toLocaleDateString()
+                        }
+                    ]
+                };
+
+                // Gửi dữ liệu qua SheetDB
+                fetch('https://sheetdb.io/api/v1/p21vsw6v2glwy', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(duLieuDangKy)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert("Đăng ký tài khoản thành công!");
+                    localStorage.setItem("nguoiDungDangNhap", hoTen);
+                    
+                    // Tự động chuyển thẳng vào hệ thống quản lý
+                    window.location.href = "admin-clinic.html";
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert("Có lỗi xảy ra khi kết nối tới cơ sở dữ liệu!");
+                });
+            });
+        }
+    </script>
 </body>
 </html>

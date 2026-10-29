@@ -3,67 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập - AI Clinic</title>
+    <title>Xác thực hệ thống | AI Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style-login.css">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+    </style>
 </head>
-<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
-        <div class="text-center mb-8">
-            <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-blue-500/30">
-                <i class="fa-solid fa-stethoscope"></i>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- CỘT TRÁI: GIỚI THIỆU HỆ THỐNG & CÁC QUYỀN HẠN -->
+        <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-800 p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/30 rounded-full blur-2xl"></div>
+            
+            <div>
+                <a href="index.html" class="inline-flex items-center gap-3 text-2xl font-bold tracking-tight text-white mb-6">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-xl backdrop-blur-md">
+                        🏥
+                    </div>
+                    AI Clinic
+                </a>
+                <h2 class="text-3xl font-extrabold mb-3 leading-tight">Hệ thống quản lý phòng khám thông minh</h2>
+                <p class="text-blue-100 text-sm leading-relaxed">
+                    Nền tảng tích hợp AI hỗ trợ hành chính, quản lý lịch hẹn, bác sĩ và hồ sơ bệnh án chuẩn mực, phân quyền chặt chẽ.
+                </p>
             </div>
-            <h2 class="text-2xl font-bold text-slate-900">Đăng Nhập AI Clinic</h2>
-            <p class="text-xs text-slate-500 mt-1">Chọn vai trò truy cập hệ thống của bạn</p>
+
+            <div class="mt-8 pt-6 border-t border-blue-500/40 space-y-3">
+                <p class="text-xs font-semibold text-blue-200 uppercase tracking-wider">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> Các phân quyền hỗ trợ:
+                </p>
+                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-xs text-blue-50 space-y-2 border border-white/10">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-crown text-amber-300"></i>
+                        <span><b>Quản trị viên (Admin):</b> Quản lý toàn hệ thống</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-user-doctor text-emerald-300"></i>
+                        <span><b>Bác sĩ:</b> Quản lý lịch làm việc và chuyên môn</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-teal-300"></i>
+                        <span><b>Lễ tân:</b> Đặt lịch và tiếp nhận bệnh nhân</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-hospital-user text-cyan-300"></i>
+                        <span><b>Bệnh nhân:</b> Đặt lịch khám và tra cứu cá nhân</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <form id="login-form" class="space-y-4">
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Vai trò truy cập</label>
-                <select id="user-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm font-medium">
-                    <option value="patient">Bệnh nhân / Khách hàng</option>
-                    <option value="doctor">Bác sĩ / Chuyên gia y tế</option>
-                    <option value="admin">Quản trị viên (Admin)</option>
-                </select>
+        <!-- CỘT PHẢI: FORM ĐĂNG NHẬP & ĐĂNG KÝ -->
+        <div class="p-8 sm:p-10 flex flex-col justify-center bg-white relative">
+            
+            <!-- NÚT CHUYỂN TAB -->
+            <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
+                <button type="button" id="tabLoginBtn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-600 shadow-sm">
+                    Đăng nhập
+                </button>
+                <button type="button" id="tabRegisterBtn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-800">
+                    Đăng ký tài khoản
+                </button>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email hoặc tên đăng nhập</label>
-                <input type="text" id="user-email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm" placeholder="Nhập email...">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mật khẩu</label>
-                <input type="password" id="user-pass" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm" placeholder="••••••••">
-            </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 transition text-sm">
-                Đăng Nhập Hệ Thống
-            </button>
-        </form>
 
-        <div class="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
-            <p class="mb-2 font-semibold">Tài khoản mẫu dùng thử:</p>
-            <div class="bg-slate-50 p-3 rounded-xl text-left space-y-1 text-slate-600 font-mono">
-                <p>👨‍⚕️ <b>Bác sĩ:</b> bacsi1@gmail.com / 123456</p>
-                <p>🛠️ <b>Admin:</b> admin@gmail.com / 123456</p>
+            <!-- FORM ĐĂNG NHẬP -->
+            <div id="loginSection">
+                <div class="mb-5">
+                    <h1 class="text-2xl font-bold text-slate-900">Chào mừng trở lại!</h1>
+                    <p class="text-slate-500 text-sm mt-1">Đăng nhập bằng tài khoản đã đăng ký của bạn</p>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block font-semibold text-xs text-slate-700 uppercase tracking-wider mb-2">Tên đăng nhập</label>
+                        <input type="text" id="loginUser" required placeholder="Nhập tên đăng nhập..." 
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 focus:bg-white transition">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-xs text-slate-700 uppercase tracking-wider mb-2">Mật khẩu</label>
+                        <input type="password" id="loginPass" required placeholder="••••••••" 
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 focus:bg-white transition">
+                    </div>
+
+                    <div id="loginError" class="hidden text-red-600 text-xs font-semibold bg-red-50 p-3 rounded-xl border border-red-100">
+                        Tên đăng nhập hoặc mật khẩu không chính xác!
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 text-sm mt-2">
+                        Đăng nhập hệ thống
+                    </button>
+                </form>
+            </div>
+
+            <!-- FORM ĐĂNG KÝ -->
+            <div id="registerSection" class="hidden">
+                <div class="mb-4">
+                    <h1 class="text-2xl font-bold text-slate-900">Đăng ký phân quyền</h1>
+                    <p class="text-slate-500 text-xs mt-0.5">Tạo tài khoản mới và chọn quyền hạn hệ thống tương ứng</p>
+                </div>
+
+                <form id="registerForm" class="space-y-3">
+                    <div>
+                        <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Họ và tên *</label>
+                        <input type="text" id="regName" required placeholder="Ví dụ: Nguyễn Văn A" 
+                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Tên đăng nhập *</label>
+                            <input type="text" id="regUser" required placeholder="username" 
+                                   class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Phân quyền tài khoản *</label>
+                            <select id="regRole" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                                <option value="Bệnh nhân">Bệnh nhân</option>
+                                <option value="Lễ tân">Lễ tân</option>
+                                <option value="Bác sĩ">Bác sĩ</option>
+                                <option value="Quản trị viên">Quản trị viên</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Số điện thoại *</label>
+                            <input type="tel" id="regPhone" required placeholder="0901234567" 
+                                   class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Mật khẩu *</label>
+                            <input type="password" id="regPass" required placeholder="••••••••" 
+                                   class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-[11px] text-slate-700 uppercase tracking-wider mb-1">Xác nhận mật khẩu *</label>
+                        <input type="password" id="regConfirmPass" required placeholder="••••••••" 
+                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-emerald-600 focus:bg-white transition">
+                    </div>
+
+                    <div id="regSuccess" class="hidden text-emerald-700 text-xs font-semibold bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
+                        <i class="fa-solid fa-circle-check mr-1"></i> Đăng ký thành công! Đang chuyển hướng theo phân quyền...
+                    </div>
+
+                    <div id="regError" class="hidden text-red-600 text-xs font-semibold bg-red-50 p-2.5 rounded-xl border border-red-100">
+                        <i class="fa-solid fa-circle-exclamation mr-1"></i> <span id="regErrorText">Lỗi đăng ký!</span>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/20 text-sm mt-1">
+                        Hoàn tất đăng ký & Phân quyền
+                    </button>
+                </form>
+            </div>
+
+            <div class="text-center mt-6 pt-4 border-t border-slate-100">
+                <a href="index.html" class="text-xs text-slate-500 hover:text-blue-600 font-semibold inline-flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ AI Clinic
+                </a>
             </div>
         </div>
-        <p class="text-center text-xs text-slate-500 mt-4">Chưa có tài khoản? <a href="register.html" class="text-blue-600 font-semibold hover:underline">Đăng ký ngay</a></p>
+
     </div>
 
-    <!-- JavaScript phân quyền chuyển hướng khi đăng nhập -->
+    <!-- JAVASCRIPT XỬ LÝ ĐĂNG NHẬP, ĐĂNG KÝ VÀ ĐIỀU HƯỚNG ĐÚNG PHÂN QUYỀN -->
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const role = document.getElementById('user-role').value;
+        // Khởi tạo tài khoản mẫu mặc định nếu chưa có
+        if (!localStorage.getItem("clinicUsers")) {
+            const defaultAccounts = [
+                { username: "admin", password: "admin123", role: "Quản trị viên", name: "Quản trị hệ thống", phone: "0900000001" },
+                { username: "doctor", password: "doctor123", role: "Bác sĩ", name: "Bác sĩ Nguyễn Văn An", phone: "0900000002" },
+                { username: "reception", password: "reception123", role: "Lễ tân", name: "Nhân viên Lễ tân", phone: "0900000003" },
+                { username: "patient", password: "patient123", role: "Bệnh nhân", name: "Bệnh nhân Trần Văn Bình", phone: "0900000004" }
+            ];
+            localStorage.setItem("clinicUsers", JSON.stringify(defaultAccounts));
+        }
 
-            // Chuyển hướng đến giao diện tương ứng theo vai trò
-            if (role === 'doctor') {
-                window.location.href = 'doctor-dashboard.html';
-            } else if (role === 'admin') {
-                window.location.href = 'admin-clinic.html';
+        // Chuyển tab giao diện
+        function switchTab(tab) {
+            const loginSec = document.getElementById("loginSection");
+            const regSec = document.getElementById("registerSection");
+            const tabLoginBtn = document.getElementById("tabLoginBtn");
+            const tabRegisterBtn = document.getElementById("tabRegisterBtn");
+
+            if (tab === 'login') {
+                loginSec.classList.remove("hidden");
+                regSec.classList.add("hidden");
+                tabLoginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-600 shadow-sm";
+                tabRegisterBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-800";
             } else {
-                window.location.href = 'patient.html';
+                loginSec.classList.add("hidden");
+                regSec.classList.remove("hidden");
+                tabRegisterBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-emerald-600 shadow-sm";
+                tabLoginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-800";
             }
+        }
+
+        // Hàm điều hướng tự động dựa trên phân quyền (role)
+        function redirectBasedOnRole(role) {
+            switch (role) {
+                case "Quản trị viên":
+                case "Lễ tân":
+                    window.location.href = "admin-clinic.html"; // Vào trang quản trị & lịch hẹn
+                    break;
+                case "Bác sĩ":
+                    window.location.href = "doctor-schedule.html"; // Vào trang lịch làm việc bác sĩ
+                    break;
+                case "Bệnh nhân":
+                default:
+                    window.location.href = "index.html"; // Bệnh nhân về trang chủ đặt lịch
+                    break;
+            }
+        }
+
+        // Xử lý ĐĂNG NHẬP
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const username = document.getElementById("loginUser").value.trim();
+            const password = document.getElementById("loginPass").value.trim();
+            const loginError = document.getElementById("loginError");
+
+            loginError.classList.add("hidden");
+
+            const users = JSON.parse(localStorage.getItem("clinicUsers") || "[]");
+            const validUser = users.find(u => u.username === username && u.password === password);
+
+            if (validUser) {
+                localStorage.setItem("currentSession", JSON.stringify(validUser));
+                // Điều hướng chính xác theo quyền của tài khoản này
+                redirectBasedOnRole(validUser.role);
+            } else {
+                loginError.classList.remove("hidden");
+            }
+        });
+
+        // Xử lý ĐĂNG KÝ
+        document.getElementById("registerForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById("regName").value.trim();
+            const username = document.getElementById("regUser").value.trim();
+            const role = document.getElementById("regRole").value; // Lấy đúng phân quyền được chọn
+            const phone = document.getElementById("regPhone").value.trim();
+            const password = document.getElementById("regPass").value.trim();
+            const confirmPass = document.getElementById("regConfirmPass").value.trim();
+
+            const regError = document.getElementById("regError");
+            const regErrorText = document.getElementById("regErrorText");
+            const regSuccess = document.getElementById("regSuccess");
+
+            regError.classList.add("hidden");
+            regSuccess.classList.add("hidden");
+
+            if (password !== confirmPass) {
+                regErrorText.textContent = "Mật khẩu xác nhận không khớp!";
+                regError.classList.remove("hidden");
+                return;
+            }
+
+            if (password.length < 6) {
+                regErrorText.textContent = "Mật khẩu phải có ít nhất 6 ký tự!";
+                regError.classList.remove("hidden");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("clinicUsers") || "[]");
+            
+            if (users.some(u => u.username === username)) {
+                regErrorText.textContent = "Tên đăng nhập này đã có người sử dụng!";
+                regError.classList.remove("hidden");
+                return;
+            }
+
+            // Đóng gói thông tin tài khoản và phân quyền
+            const newUser = { username, password, role, name, phone };
+            
+            // Lưu trữ vào kho dữ liệu chung
+            users.push(newUser);
+            localStorage.setItem("clinicUsers", JSON.stringify(users));
+
+            regSuccess.classList.remove("hidden");
+
+            // Tự động đăng nhập và chuyển hướng đúng trang theo quyền vừa đăng ký sau 1 giây
+            setTimeout(() => {
+                localStorage.setItem("currentSession", JSON.stringify(newUser));
+                redirectBasedOnRole(newUser.role);
+            }, 1000);
         });
     </script>
 </body>

@@ -1,0 +1,604 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bác sĩ | AI Clinic</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .doctor-card {
+            transition: all 0.2s ease;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e0f2fe;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-700">
+                🏥 AI Clinic
+            </a>
+
+            <nav class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="index.html" class="hover:text-blue-600">Trang chủ</a>
+                <a href="booking.html" class="hover:text-blue-600">Đặt lịch</a>
+                <a href="medical-records.html" class="hover:text-blue-600">Hồ sơ bệnh án</a>
+                <a href="ai-consultation.html" class="hover:text-blue-600">Tư vấn AI</a>
+                <a href="doctors.html" class="text-blue-700 font-bold">Bác sĩ</a>
+                <a href="admin.html" class="hover:text-blue-600">Quản trị</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- TITLE -->
+        <section class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                <div>
+                    <p class="text-blue-600 font-semibold text-sm mb-2">
+                        HỆ THỐNG QUẢN LÝ PHÒNG KHÁM
+                    </p>
+
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900">
+                        Quản lý bác sĩ
+                    </h1>
+
+                    <p class="text-slate-500 mt-3">
+                        Quản lý thông tin, chuyên khoa và liên hệ của đội ngũ bác sĩ.
+                    </p>
+                </div>
+
+                <button
+                    onclick="openAddForm()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md">
+                    + Thêm bác sĩ
+                </button>
+            </div>
+        </section>
+
+        <!-- STATISTICS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Tổng số bác sĩ</p>
+                <h2 id="totalDoctors" class="text-3xl font-bold text-blue-700 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Số chuyên khoa</p>
+                <h2 id="totalSpecialties" class="text-3xl font-bold text-emerald-600 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Đang hiển thị</p>
+                <h2 id="visibleDoctors" class="text-3xl font-bold text-violet-600 mt-3">0</h2>
+            </div>
+
+        </section>
+
+        <!-- SEARCH -->
+        <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div class="md:col-span-2">
+                    <label for="searchInput" class="block text-sm font-semibold mb-2">
+                        Tìm kiếm bác sĩ
+                    </label>
+
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Nhập tên bác sĩ hoặc chuyên khoa..."
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                </div>
+
+                <div>
+                    <label for="specialtyFilter" class="block text-sm font-semibold mb-2">
+                        Lọc theo chuyên khoa
+                    </label>
+
+                    <select
+                        id="specialtyFilter"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="">Tất cả chuyên khoa</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- DOCTOR LIST -->
+        <section>
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-xl font-bold">Danh sách bác sĩ</h2>
+                <span id="resultCount" class="text-sm text-slate-500"></span>
+            </div>
+
+            <div id="doctorList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+
+            <div id="emptyState" class="hidden bg-white rounded-2xl p-12 text-center">
+                <div class="text-5xl mb-4">🩺</div>
+                <h3 class="text-xl font-bold mb-2">Không tìm thấy bác sĩ</h3>
+                <p class="text-slate-500">Hãy thử thay đổi từ khóa tìm kiếm.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADD DOCTOR MODAL -->
+    <div id="addModal"
+         class="hidden fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-4">
+
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-xl">
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Thêm bác sĩ mới</h2>
+
+                <button onclick="closeAddForm()"
+                        class="text-2xl text-slate-400 hover:text-slate-700">
+                    &times;
+                </button>
+            </div>
+
+            <form id="doctorForm" class="space-y-4">
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Họ và tên *
+                    </label>
+
+                    <input
+                        id="doctorName"
+                        type="text"
+                        required
+                        placeholder="Ví dụ: Nguyễn Văn A"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Chuyên khoa *
+                    </label>
+
+                    <select
+                        id="doctorSpecialty"
+                        required
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+
+                        <option value="">-- Chọn chuyên khoa --</option>
+                        <option value="Tim mạch">Tim mạch</option>
+                        <option value="Nội khoa">Nội khoa</option>
+                        <option value="Nhi khoa">Nhi khoa</option>
+                        <option value="Da liễu">Da liễu</option>
+                        <option value="Thần kinh">Thần kinh</option>
+                        <option value="Tai mũi họng">Tai mũi họng</option>
+                        <option value="Ngoại khoa">Ngoại khoa</option>
+                        <option value="Răng hàm mặt">Răng hàm mặt</option>
+                        <option value="Sản phụ khoa">Sản phụ khoa</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Số điện thoại
+                    </label>
+
+                    <input
+                        id="doctorPhone"
+                        type="tel"
+                        placeholder="Nhập số điện thoại"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Email
+                    </label>
+
+                    <input
+                        id="doctorEmail"
+                        type="email"
+                        placeholder="doctor@example.com"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Giới thiệu
+                    </label>
+
+                    <textarea
+                        id="doctorDescription"
+                        rows="3"
+                        placeholder="Thông tin giới thiệu về bác sĩ..."
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button
+                        type="button"
+                        onclick="closeAddForm()"
+                        class="flex-1 border border-slate-200 rounded-xl py-3 font-semibold hover:bg-slate-50">
+                        Hủy
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="flex-1 bg-blue-600 text-white rounded-xl py-3 font-semibold hover:bg-blue-700">
+                        Lưu bác sĩ
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-slate-500">
+            © 2026 AI Clinic - Hệ thống quản lý phòng khám thông minh.
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = "clinicDoctors";
+
+        // Dữ liệu bác sĩ mẫu
+        const defaultDoctors = [
+            {
+                id: 1,
+                name: "Nguyễn Minh Anh",
+                specialty: "Tim mạch",
+                phone: "0901234567",
+                email: "minhanh@example.com",
+                description: "Bác sĩ chuyên khoa Tim mạch."
+            },
+            {
+                id: 2,
+                name: "Trần Quốc Bảo",
+                specialty: "Nội khoa",
+                phone: "0912345678",
+                email: "quocbao@example.com",
+                description: "Bác sĩ chuyên khoa Nội tổng quát."
+            },
+            {
+                id: 3,
+                name: "Lê Thu Hà",
+                specialty: "Nhi khoa",
+                phone: "0923456789",
+                email: "thuha@example.com",
+                description: "Bác sĩ chuyên khám và chăm sóc sức khỏe trẻ em."
+            },
+            {
+                id: 4,
+                name: "Phạm Đức Long",
+                specialty: "Da liễu",
+                phone: "0934567890",
+                email: "duclong@example.com",
+                description: "Bác sĩ chuyên khoa Da liễu."
+            },
+            {
+                id: 5,
+                name: "Hoàng Ngọc Mai",
+                specialty: "Thần kinh",
+                phone: "0945678901",
+                email: "ngocmai@example.com",
+                description: "Bác sĩ chuyên khoa Thần kinh."
+            },
+            {
+                id: 6,
+                name: "Đỗ Thành Nam",
+                specialty: "Tai mũi họng",
+                phone: "0956789012",
+                email: "thanhnam@example.com",
+                description: "Bác sĩ chuyên khoa Tai mũi họng."
+            }
+        ];
+
+        // Lấy dữ liệu từ localStorage
+        function getDoctors() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+
+                if (data === null) {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(defaultDoctors)
+                    );
+
+                    return [...defaultDoctors];
+                }
+
+                const doctors = JSON.parse(data);
+
+                return Array.isArray(doctors) ? doctors : [];
+            } catch (error) {
+                console.error("Không thể đọc dữ liệu bác sĩ:", error);
+                return [];
+            }
+        }
+
+        // Lưu dữ liệu
+        function saveDoctors(doctors) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(doctors));
+                return true;
+            } catch (error) {
+                alert("Không thể lưu dữ liệu. Vui lòng kiểm tra trình duyệt.");
+                return false;
+            }
+        }
+
+        // Hiển thị danh sách bác sĩ
+        function renderDoctors() {
+            const doctors = getDoctors();
+
+            const searchValue = document
+                .getElementById("searchInput")
+                .value.trim()
+                .toLowerCase();
+
+            const selectedSpecialty =
+                document.getElementById("specialtyFilter").value;
+
+            const filteredDoctors = doctors.filter(doctor => {
+                const name = (doctor.name || "").toLowerCase();
+                const specialty = (doctor.specialty || "").toLowerCase();
+
+                const matchesSearch =
+                    name.includes(searchValue) ||
+                    specialty.includes(searchValue);
+
+                const matchesSpecialty =
+                    !selectedSpecialty ||
+                    doctor.specialty === selectedSpecialty;
+
+                return matchesSearch && matchesSpecialty;
+            });
+
+            const doctorList = document.getElementById("doctorList");
+            const emptyState = document.getElementById("emptyState");
+
+            doctorList.innerHTML = "";
+
+            filteredDoctors.forEach(doctor => {
+                const card = document.createElement("div");
+
+                card.className =
+                    "doctor-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm";
+
+                const initial = (doctor.name || "B")
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+                card.innerHTML = `
+                    <div class="flex flex-col items-center text-center">
+
+                        <div class="avatar flex items-center justify-center text-3xl font-bold text-blue-700 mb-4">
+                            ${initial}
+                        </div>
+
+                        <h3 class="text-xl font-bold text-slate-900">
+                            ${escapeHTML(doctor.name)}
+                        </h3>
+
+                        <span class="mt-3 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">
+                            ${escapeHTML(doctor.specialty)}
+                        </span>
+
+                    </div>
+
+                    <div class="mt-6 space-y-3 text-sm text-slate-600">
+
+                        <p>
+                            <span class="font-semibold text-slate-800">📞 Điện thoại:</span>
+                            ${escapeHTML(doctor.phone || "Chưa cập nhật")}
+                        </p>
+
+                        <p class="break-words">
+                            <span class="font-semibold text-slate-800">✉️ Email:</span>
+                            ${escapeHTML(doctor.email || "Chưa cập nhật")}
+                        </p>
+
+                        <p class="leading-relaxed">
+                            ${escapeHTML(doctor.description || "Chưa có thông tin giới thiệu.")}
+                        </p>
+
+                    </div>
+
+                    <button
+                        onclick="deleteDoctor(${Number(doctor.id)})"
+                        class="mt-6 w-full border border-red-200 text-red-600 hover:bg-red-50 rounded-xl py-3 font-semibold">
+                        🗑 Xóa bác sĩ
+                    </button>
+                `;
+
+                doctorList.appendChild(card);
+            });
+
+            document.getElementById("totalDoctors").textContent =
+                doctors.length;
+
+            document.getElementById("totalSpecialties").textContent =
+                new Set(
+                    doctors.map(doctor => doctor.specialty).filter(Boolean)
+                ).size;
+
+            document.getElementById("visibleDoctors").textContent =
+                filteredDoctors.length;
+
+            document.getElementById("resultCount").textContent =
+                `Hiển thị ${filteredDoctors.length} / ${doctors.length} bác sĩ`;
+
+            emptyState.classList.toggle(
+                "hidden",
+                filteredDoctors.length !== 0
+            );
+
+            updateSpecialtyFilter(doctors);
+        }
+
+        // Chống chèn HTML không an toàn
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        // Cập nhật bộ lọc chuyên khoa
+        function updateSpecialtyFilter(doctors) {
+            const select = document.getElementById("specialtyFilter");
+            const currentValue = select.value;
+
+            const specialties = [
+                ...new Set(
+                    doctors.map(doctor => doctor.specialty).filter(Boolean)
+                )
+            ].sort();
+
+            select.innerHTML =
+                '<option value="">Tất cả chuyên khoa</option>';
+
+            specialties.forEach(specialty => {
+                const option = document.createElement("option");
+
+                option.value = specialty;
+                option.textContent = specialty;
+
+                select.appendChild(option);
+            });
+
+            if (specialties.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        // Mở biểu mẫu thêm bác sĩ
+        function openAddForm() {
+            const modal = document.getElementById("addModal");
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        // Đóng biểu mẫu
+        function closeAddForm() {
+            const modal = document.getElementById("addModal");
+
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+
+            document.getElementById("doctorForm").reset();
+        }
+
+        // Thêm bác sĩ
+        document.getElementById("doctorForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+
+                const doctors = getDoctors();
+
+                const newDoctor = {
+                    id: Date.now(),
+                    name: document.getElementById("doctorName").value.trim(),
+                    specialty: document.getElementById("doctorSpecialty").value,
+                    phone: document.getElementById("doctorPhone").value.trim(),
+                    email: document.getElementById("doctorEmail").value.trim(),
+                    description: document
+                        .getElementById("doctorDescription")
+                        .value.trim()
+                };
+
+                if (!newDoctor.name || !newDoctor.specialty) {
+                    alert("Vui lòng nhập họ tên và chọn chuyên khoa.");
+                    return;
+                }
+
+                doctors.push(newDoctor);
+
+                if (saveDoctors(doctors)) {
+                    closeAddForm();
+                    renderDoctors();
+
+                    alert("Đã thêm bác sĩ thành công!");
+                }
+            }
+        );
+
+        // Xóa bác sĩ
+        function deleteDoctor(id) {
+            const doctors = getDoctors();
+
+            const doctor = doctors.find(item => item.id === id);
+
+            if (!doctor) {
+                alert("Không tìm thấy bác sĩ.");
+                return;
+            }
+
+            const confirmed = confirm(
+                `Bạn có chắc chắn muốn xóa bác sĩ "${doctor.name}" không?`
+            );
+
+            if (!confirmed) return;
+
+            const updatedDoctors = doctors.filter(item => item.id !== id);
+
+            if (saveDoctors(updatedDoctors)) {
+                renderDoctors();
+                alert("Đã xóa bác sĩ thành công!");
+            }
+        }
+
+        // Tìm kiếm và lọc
+        document.getElementById("searchInput").addEventListener(
+            "input",
+            renderDoctors
+        );
+
+        document.getElementById("specialtyFilter").addEventListener(
+            "change",
+            renderDoctors
+        );
+
+        // Khởi tạo trang
+        renderDoctors();
+    </script>
+
+</body>
+</html>
+```

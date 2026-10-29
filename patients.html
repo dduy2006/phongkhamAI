@@ -1,0 +1,608 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bệnh nhân | AI Clinic</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .patient-card {
+            transition: 0.2s ease;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        .avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-700">
+                🏥 AI Clinic
+            </a>
+
+            <nav class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="index.html" class="hover:text-blue-600">Trang chủ</a>
+                <a href="booking.html" class="hover:text-blue-600">Đặt lịch</a>
+                <a href="medical-records.html" class="hover:text-blue-600">Hồ sơ bệnh án</a>
+                <a href="doctors.html" class="hover:text-blue-600">Bác sĩ</a>
+                <a href="doctor-schedule.html" class="hover:text-blue-600">Lịch làm việc</a>
+                <a href="patients.html" class="text-blue-700 font-bold">Bệnh nhân</a>
+                <a href="admin.html" class="hover:text-blue-600">Quản trị</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- TITLE -->
+        <section class="mb-8">
+            <p class="text-blue-600 font-semibold text-sm mb-2">
+                HỆ THỐNG QUẢN LÝ PHÒNG KHÁM
+            </p>
+
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-5">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900">
+                        Quản lý bệnh nhân
+                    </h1>
+
+                    <p class="text-slate-500 mt-3">
+                        Quản lý thông tin cá nhân và hồ sơ liên hệ của bệnh nhân.
+                    </p>
+                </div>
+
+                <button
+                    onclick="openPatientForm()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md">
+                    + Thêm bệnh nhân
+                </button>
+            </div>
+        </section>
+
+        <!-- STATISTICS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Tổng số bệnh nhân</p>
+                <h2 id="totalPatients" class="text-3xl font-bold text-blue-700 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Bệnh nhân nam</p>
+                <h2 id="malePatients" class="text-3xl font-bold text-emerald-600 mt-3">0</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm">Bệnh nhân nữ</p>
+                <h2 id="femalePatients" class="text-3xl font-bold text-violet-600 mt-3">0</h2>
+            </div>
+
+        </section>
+
+        <!-- SEARCH -->
+        <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label for="searchInput" class="block text-sm font-semibold mb-2">
+                        Tìm kiếm bệnh nhân
+                    </label>
+
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Nhập tên hoặc số điện thoại..."
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label for="genderFilter" class="block text-sm font-semibold mb-2">
+                        Lọc theo giới tính
+                    </label>
+
+                    <select
+                        id="genderFilter"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+
+                        <option value="">Tất cả giới tính</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PATIENT LIST -->
+        <section>
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold">Danh sách bệnh nhân</h2>
+                <span id="resultCount" class="text-sm text-slate-500"></span>
+            </div>
+
+            <div id="patientList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <div id="emptyState" class="hidden bg-white rounded-2xl p-12 text-center">
+                <div class="text-5xl mb-4">👨‍⚕️</div>
+                <h3 class="text-xl font-bold mb-2">Không tìm thấy bệnh nhân</h3>
+                <p class="text-slate-500">Hãy thử thay đổi từ khóa tìm kiếm.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADD PATIENT MODAL -->
+    <div id="patientModal"
+         class="hidden fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-4">
+
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Thêm bệnh nhân</h2>
+
+                <button onclick="closePatientForm()"
+                        class="text-2xl text-slate-400 hover:text-slate-700">
+                    &times;
+                </button>
+            </div>
+
+            <form id="patientForm" class="space-y-4">
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Họ và tên *
+                    </label>
+
+                    <input
+                        id="patientName"
+                        type="text"
+                        required
+                        placeholder="Nhập họ và tên"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">
+                            Ngày sinh
+                        </label>
+
+                        <input
+                            id="patientBirth"
+                            type="date"
+                            class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">
+                            Giới tính
+                        </label>
+
+                        <select
+                            id="patientGender"
+                            class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+
+                            <option value="">-- Chọn giới tính --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Số điện thoại *
+                    </label>
+
+                    <input
+                        id="patientPhone"
+                        type="tel"
+                        required
+                        placeholder="Nhập số điện thoại"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Email
+                    </label>
+
+                    <input
+                        id="patientEmail"
+                        type="email"
+                        placeholder="Nhập email"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">
+                        Địa chỉ
+                    </label>
+
+                    <input
+                        id="patientAddress"
+                        type="text"
+                        placeholder="Nhập địa chỉ"
+                        class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button
+                        type="button"
+                        onclick="closePatientForm()"
+                        class="flex-1 border border-slate-200 rounded-xl py-3 font-semibold hover:bg-slate-50">
+                        Hủy
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="flex-1 bg-blue-600 text-white rounded-xl py-3 font-semibold hover:bg-blue-700">
+                        Lưu bệnh nhân
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-slate-500">
+            © 2026 AI Clinic - Hệ thống quản lý phòng khám thông minh.
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = "clinicPatients";
+
+        const defaultPatients = [
+            {
+                id: 1,
+                name: "Nguyễn Thị Lan",
+                birth: "1995-04-12",
+                gender: "Nữ",
+                phone: "0901234567",
+                email: "lan@example.com",
+                address: "Hà Nội"
+            },
+            {
+                id: 2,
+                name: "Trần Văn Nam",
+                birth: "1990-08-20",
+                gender: "Nam",
+                phone: "0912345678",
+                email: "nam@example.com",
+                address: "Hà Nội"
+            },
+            {
+                id: 3,
+                name: "Lê Thu Trang",
+                birth: "2000-01-15",
+                gender: "Nữ",
+                phone: "0923456789",
+                email: "trang@example.com",
+                address: "Bắc Ninh"
+            },
+            {
+                id: 4,
+                name: "Phạm Minh Đức",
+                birth: "1988-11-03",
+                gender: "Nam",
+                phone: "0934567890",
+                email: "duc@example.com",
+                address: "Hải Phòng"
+            }
+        ];
+
+        function getPatients() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+
+                if (data === null) {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(defaultPatients)
+                    );
+
+                    return [...defaultPatients];
+                }
+
+                const patients = JSON.parse(data);
+
+                return Array.isArray(patients) ? patients : [];
+            } catch (error) {
+                console.error("Không thể đọc dữ liệu bệnh nhân:", error);
+                return [];
+            }
+        }
+
+        function savePatients(patients) {
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(patients)
+                );
+
+                return true;
+            } catch (error) {
+                alert("Không thể lưu dữ liệu bệnh nhân.");
+                return false;
+            }
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return "Chưa cập nhật";
+
+            const parts = dateString.split("-");
+
+            if (parts.length !== 3) return dateString;
+
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function renderPatients() {
+            const patients = getPatients();
+
+            const searchValue = document
+                .getElementById("searchInput")
+                .value.trim()
+                .toLowerCase();
+
+            const selectedGender =
+                document.getElementById("genderFilter").value;
+
+            const filteredPatients = patients.filter(patient => {
+                const name = (patient.name || "").toLowerCase();
+                const phone = (patient.phone || "").toLowerCase();
+
+                const matchesSearch =
+                    name.includes(searchValue) ||
+                    phone.includes(searchValue);
+
+                const matchesGender =
+                    !selectedGender ||
+                    patient.gender === selectedGender;
+
+                return matchesSearch && matchesGender;
+            });
+
+            const list = document.getElementById("patientList");
+            const emptyState = document.getElementById("emptyState");
+
+            list.innerHTML = "";
+
+            filteredPatients.forEach(patient => {
+                const card = document.createElement("div");
+
+                card.className =
+                    "patient-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm";
+
+                const initial = (patient.name || "B")
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="avatar">
+                            ${escapeHTML(initial)}
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">
+                                ${escapeHTML(patient.name)}
+                            </h3>
+
+                            <p class="text-sm text-blue-600 mt-1">
+                                Mã bệnh nhân: BN${String(patient.id).slice(-6)}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-3 text-sm text-slate-600">
+
+                        <p>
+                            <span class="font-semibold text-slate-800">🎂 Ngày sinh:</span>
+                            ${formatDate(patient.birth)}
+                        </p>
+
+                        <p>
+                            <span class="font-semibold text-slate-800">👤 Giới tính:</span>
+                            ${escapeHTML(patient.gender || "Chưa cập nhật")}
+                        </p>
+
+                        <p>
+                            <span class="font-semibold text-slate-800">📞 Điện thoại:</span>
+                            ${escapeHTML(patient.phone || "Chưa cập nhật")}
+                        </p>
+
+                        <p class="break-words">
+                            <span class="font-semibold text-slate-800">✉️ Email:</span>
+                            ${escapeHTML(patient.email || "Chưa cập nhật")}
+                        </p>
+
+                        <p>
+                            <span class="font-semibold text-slate-800">📍 Địa chỉ:</span>
+                            ${escapeHTML(patient.address || "Chưa cập nhật")}
+                        </p>
+
+                    </div>
+
+                    <button
+                        onclick="deletePatient(${Number(patient.id)})"
+                        class="mt-6 w-full border border-red-200 text-red-600 hover:bg-red-50 rounded-xl py-3 font-semibold">
+                        🗑 Xóa bệnh nhân
+                    </button>
+                `;
+
+                list.appendChild(card);
+            });
+
+            document.getElementById("totalPatients").textContent =
+                patients.length;
+
+            document.getElementById("malePatients").textContent =
+                patients.filter(item => item.gender === "Nam").length;
+
+            document.getElementById("femalePatients").textContent =
+                patients.filter(item => item.gender === "Nữ").length;
+
+            document.getElementById("resultCount").textContent =
+                `Hiển thị ${filteredPatients.length} / ${patients.length} bệnh nhân`;
+
+            emptyState.classList.toggle(
+                "hidden",
+                filteredPatients.length !== 0
+            );
+        }
+
+        function openPatientForm() {
+            const modal = document.getElementById("patientModal");
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            document.getElementById("patientBirth").max =
+                new Date().toISOString().split("T")[0];
+        }
+
+        function closePatientForm() {
+            const modal = document.getElementById("patientModal");
+
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+
+            document.getElementById("patientForm").reset();
+        }
+
+        document.getElementById("patientForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+
+                const patients = getPatients();
+
+                const name =
+                    document.getElementById("patientName").value.trim();
+
+                const phone =
+                    document.getElementById("patientPhone").value.trim();
+
+                if (!name || !phone) {
+                    alert("Vui lòng nhập họ tên và số điện thoại.");
+                    return;
+                }
+
+                const duplicatePhone = patients.some(
+                    patient => patient.phone === phone
+                );
+
+                if (duplicatePhone) {
+                    alert("Số điện thoại này đã được đăng ký.");
+                    return;
+                }
+
+                const newPatient = {
+                    id: Date.now(),
+                    name,
+                    birth: document.getElementById("patientBirth").value,
+                    gender: document.getElementById("patientGender").value,
+                    phone,
+                    email: document.getElementById("patientEmail").value.trim(),
+                    address: document.getElementById("patientAddress").value.trim()
+                };
+
+                patients.push(newPatient);
+
+                if (savePatients(patients)) {
+                    closePatientForm();
+                    renderPatients();
+
+                    alert("Đã thêm bệnh nhân thành công!");
+                }
+            }
+        );
+
+        function deletePatient(id) {
+            const patients = getPatients();
+
+            const patient = patients.find(item => item.id === id);
+
+            if (!patient) {
+                alert("Không tìm thấy bệnh nhân.");
+                return;
+            }
+
+            const confirmed = confirm(
+                `Bạn có chắc chắn muốn xóa bệnh nhân "${patient.name}" không?`
+            );
+
+            if (!confirmed) return;
+
+            const updatedPatients =
+                patients.filter(item => item.id !== id);
+
+            if (savePatients(updatedPatients)) {
+                renderPatients();
+                alert("Đã xóa bệnh nhân thành công!");
+            }
+        }
+
+        document.getElementById("searchInput").addEventListener(
+            "input",
+            renderPatients
+        );
+
+        document.getElementById("genderFilter").addEventListener(
+            "change",
+            renderPatients
+        );
+
+        renderPatients();
+    </script>
+
+</body>
+</html>
+```
